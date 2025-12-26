@@ -4,13 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="#F7FAFC">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="?attr/colorPrimary"
+        android:background="#3182CE"
         android:elevation="4dp"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
         app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
@@ -31,35 +32,31 @@
                 android:orientation="vertical"
                 android:padding="16dp">
 
-                <!-- Status Card -->
                 <com.google.android.material.card.MaterialCardView
                     android:id="@+id/cardStatus"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="16dp"
                     app:cardCornerRadius="12dp"
-                    app.cardElevation="2dp">
-
-                    <TextView
-                        android:id="@+id/tvStatus"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:padding="12dp"
-                        android:textSize="16sp"
-                        android:textStyle="bold"
-                        tools:text="STATUS: DRAFT" />
+                    app:cardElevation="2dp"> <TextView
+                    android:id="@+id/tvStatus"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:padding="12dp"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    tools:text="STATUS: DRAFT" />
 
                 </com.google.android.material.card.MaterialCardView>
 
-                <!-- Jenis Pengajuan Section -->
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="JENIS PENGAJUAN"
                     android:textSize="12sp"
                     android:textStyle="bold"
-                    android:textColor="#757575"
+                    android:textColor="#718096"
                     android:layout_marginBottom="8dp" />
 
                 <com.google.android.material.card.MaterialCardView
@@ -87,14 +84,13 @@
 
                 </com.google.android.material.card.MaterialCardView>
 
-                <!-- Target Section -->
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Target: Pangkat / Jabatan"
                     android:textSize="12sp"
                     android:textStyle="bold"
-                    android:textColor="#757575"
+                    android:textColor="#718096"
                     android:layout_marginBottom="8dp" />
 
                 <com.google.android.material.card.MaterialCardView
@@ -122,7 +118,7 @@
                                 android:layout_weight="1"
                                 android:text="Pangkat Tujuan:"
                                 android:textSize="14sp"
-                                android:textColor="#757575" />
+                                android:textColor="#718096" />
 
                             <TextView
                                 android:id="@+id/tvTargetPangkat"
@@ -146,7 +142,7 @@
                                 android:layout_weight="1"
                                 android:text="Jabatan Tujuan:"
                                 android:textSize="14sp"
-                                android:textColor="#757575" />
+                                android:textColor="#718096" />
 
                             <TextView
                                 android:id="@+id/tvTargetJabatan"
@@ -163,7 +159,44 @@
 
                 </com.google.android.material.card.MaterialCardView>
 
-                <!-- Dokumen Lampiran Section -->
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/cardSyarat"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    app:cardBackgroundColor="#EBF8FF"
+                    app:cardCornerRadius="8dp"
+                    app:cardElevation="0dp"
+                    app:strokeColor="#3182CE"
+                    app:strokeWidth="1dp"
+                    android:visibility="visible">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:padding="12dp"
+                        android:gravity="center_vertical">
+
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:src="@android:drawable/ic_dialog_info"
+                            app:tint="#3182CE" />
+
+                        <TextView
+                            android:id="@+id/tvSyaratDokumen"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="12dp"
+                            android:textColor="#2A4365"
+                            android:textSize="13sp"
+                            android:textStyle="italic"
+                            tools:text="Untuk pengajuan REGULER, wajib melampirkan: SK Pangkat dan SKP." />
+
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -178,7 +211,7 @@
                         android:text="Dokumen Lampiran"
                         android:textSize="12sp"
                         android:textStyle="bold"
-                        android:textColor="#757575" />
+                        android:textColor="#718096" />
 
                     <Button
                         android:id="@+id/btnKelolaDokumen"
@@ -190,16 +223,6 @@
 
                 </LinearLayout>
 
-                <TextView
-                    android:id="@+id/tvEmptyDokumen"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Pastikan syarat SK Pangkat &amp; SKP terpenuhi."
-                    android:textSize="14sp"
-                    android:textColor="#BDBDBD"
-                    android:layout_marginBottom="16dp"
-                    android:visibility="gone" />
-
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rvDokumenLampiran"
                     android:layout_width="match_parent"
@@ -208,7 +231,6 @@
                     tools:listitem="@layout/item_dokumen_lampiran"
                     tools:itemCount="2" />
 
-                <!-- Catatan Verifikator -->
                 <com.google.android.material.card.MaterialCardView
                     android:id="@+id/cardCatatan"
                     android:layout_width="match_parent"
@@ -245,7 +267,6 @@
 
                 </com.google.android.material.card.MaterialCardView>
 
-                <!-- Alasan Penolakan -->
                 <com.google.android.material.card.MaterialCardView
                     android:id="@+id/cardPenolakan"
                     android:layout_width="match_parent"
@@ -282,7 +303,6 @@
 
                 </com.google.android.material.card.MaterialCardView>
 
-                <!-- Action Buttons -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -294,6 +314,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="KIRIM PENGAJUAN"
+                        android:backgroundTint="#3182CE"
                         android:layout_marginBottom="8dp" />
 
                 </LinearLayout>
@@ -302,7 +323,6 @@
 
         </ScrollView>
 
-        <!-- Loading Indicator -->
         <ProgressBar
             android:id="@+id/progressBar"
             android:layout_width="wrap_content"

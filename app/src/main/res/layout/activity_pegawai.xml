@@ -55,6 +55,13 @@
                     android:text="Jabatan: -"
                     android:textColor="#4A5568"
                     android:textStyle="italic" />
+
+                <TextView
+                    android:id="@+id/tvUserPangkat"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Pangkat/Gol: -"
+                    android:textColor="#4A5568" />
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 

@@ -40,6 +40,11 @@
             android:exported="false" />
 
         <activity
+            android:name=".EditProfileActivity"
+            android:exported="false"
+            android:label="Edit Profil" />
+
+        <activity
             android:name=".PegawaiActivity"
             android:exported="false" />
 

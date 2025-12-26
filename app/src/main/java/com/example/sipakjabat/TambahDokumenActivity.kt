@@ -43,7 +43,6 @@ class TambahDokumenActivity : AppCompatActivity() {
     }
 
     private fun setupJenisDokumenSpinner() {
-        // These should correspond to the ENUM values on the backend
         val daftarDokumen = listOf("SK_PANGKAT", "SKP", "SK_JABATAN", "PAK", "SK_PELANTIKAN", "SPMT")
         val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, daftarDokumen)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
@@ -79,29 +78,28 @@ class TambahDokumenActivity : AppCompatActivity() {
             jenisDokumen = jenis,
             nomorDokumen = nomor,
             tanggalTerbit = tanggal,
-            deskripsi = deskripsi.takeIf { it.isNotEmpty() } // Send null if description is empty
+            deskripsi = deskripsi.ifEmpty { null }
         )
 
         setLoadingState(true)
 
         lifecycleScope.launch {
             try {
+                // Perbaikan Argument type mismatch dengan menangani nullability token
                 val token = tokenManager.getToken()
-                if (token == null) {
-                    Toast.makeText(this@TambahDokumenActivity, "Sesi berakhir, silakan login kembali", Toast.LENGTH_LONG).show()
-                    // Optional: Redirect to login
-                    return@launch
-                }
+                if (token != null) {
+                    val response = RetrofitClient.instance.createDocument("Bearer $token", request)
 
-                val response = RetrofitClient.instance.createDocument("Bearer $token", request)
-
-                if (response.isSuccessful) {
-                    Toast.makeText(this@TambahDokumenActivity, "Dokumen berhasil disimpan", Toast.LENGTH_SHORT).show()
-                    setResult(RESULT_OK) // Signal success to the previous activity
-                    finish()
+                    if (response.isSuccessful) {
+                        Toast.makeText(this@TambahDokumenActivity, "Dokumen berhasil disimpan", Toast.LENGTH_SHORT).show()
+                        setResult(RESULT_OK)
+                        finish()
+                    } else {
+                        val errorMsg = response.body()?.message ?: "Gagal menyimpan: ${response.code()}"
+                        Toast.makeText(this@TambahDokumenActivity, errorMsg, Toast.LENGTH_LONG).show()
+                    }
                 } else {
-                    val errorMsg = response.body()?.message ?: "Gagal menyimpan dokumen. Kode: ${response.code()}"
-                    Toast.makeText(this@TambahDokumenActivity, errorMsg, Toast.LENGTH_LONG).show()
+                    Toast.makeText(this@TambahDokumenActivity, "Sesi berakhir", Toast.LENGTH_SHORT).show()
                 }
             } catch (e: Exception) {
                 Toast.makeText(this@TambahDokumenActivity, "Terjadi kesalahan: ${e.message}", Toast.LENGTH_LONG).show()
@@ -112,6 +110,7 @@ class TambahDokumenActivity : AppCompatActivity() {
     }
 
     private fun setLoadingState(isLoading: Boolean) {
+        // Sekarang binding.progressBar sudah valid karena ada di XML
         binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
         binding.btnSimpan.isEnabled = !isLoading
         binding.btnSimpan.text = if (isLoading) "Menyimpan..." else "SIMPAN DOKUMEN"

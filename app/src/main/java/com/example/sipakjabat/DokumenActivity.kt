@@ -47,8 +47,9 @@ class DokumenActivity : AppCompatActivity() {
     }
 
     private fun setupRecyclerView() {
-        dokumenAdapter = DokumenAdapter(emptyList(), {
-            showDeleteConfirmationDialog(it)
+        // Inisialisasi adapter dengan callback hapus
+        dokumenAdapter = DokumenAdapter(emptyList(), { dokumen ->
+            showDeleteConfirmationDialog(dokumen)
         })
         binding.rvDokumen.apply {
             layoutManager = LinearLayoutManager(this@DokumenActivity)
@@ -62,7 +63,7 @@ class DokumenActivity : AppCompatActivity() {
             try {
                 val token = tokenManager.getToken()
                 if (token == null) {
-                    Toast.makeText(this@DokumenActivity, "Token tidak ditemukan, silakan login kembali", Toast.LENGTH_LONG).show()
+                    Toast.makeText(this@DokumenActivity, "Silakan login kembali", Toast.LENGTH_LONG).show()
                     return@launch
                 }
 
@@ -72,10 +73,10 @@ class DokumenActivity : AppCompatActivity() {
                     dokumenAdapter.updateData(dokumenList)
                     binding.tvEmpty.visibility = if (dokumenList.isEmpty()) View.VISIBLE else View.GONE
                 } else {
-                    handleApiError("Gagal memuat dokumen: ${response.message()}")
+                    handleApiError("Gagal memuat dokumen")
                 }
             } catch (e: Exception) {
-                handleApiError("Terjadi kesalahan: ${e.message}")
+                handleApiError("Error: ${e.message}")
             } finally {
                 showLoading(false)
             }
@@ -85,7 +86,7 @@ class DokumenActivity : AppCompatActivity() {
     private fun showDeleteConfirmationDialog(dokumen: DokumenResponse) {
         AlertDialog.Builder(this)
             .setTitle("Hapus Dokumen")
-            .setMessage("Anda yakin ingin menghapus dokumen '${dokumen.jenisDokumen}'? Aksi ini tidak dapat dibatalkan.")
+            .setMessage("Hapus '${dokumen.jenisDokumen}'?")
             .setPositiveButton("Hapus") { _, _ -> deleteDokumen(dokumen.id) }
             .setNegativeButton("Batal", null)
             .show()
@@ -95,22 +96,17 @@ class DokumenActivity : AppCompatActivity() {
         showLoading(true)
         lifecycleScope.launch {
             try {
-                val token = tokenManager.getToken()!!
+                val token = tokenManager.getToken() ?: return@launch
                 val response = RetrofitClient.instance.deleteDocument("Bearer $token", id)
 
                 if (response.isSuccessful) {
-                    Toast.makeText(this@DokumenActivity, response.body()?.message ?: "Dokumen berhasil dihapus", Toast.LENGTH_SHORT).show()
-                    loadDokumen() // Refresh the list
+                    Toast.makeText(this@DokumenActivity, "Berhasil dihapus", Toast.LENGTH_SHORT).show()
+                    loadDokumen()
                 } else {
-                    val errorMsg = if (response.code() == 400) {
-                        "Gagal: Dokumen ini sedang digunakan dalam sebuah pengajuan."
-                    } else {
-                        "Gagal menghapus dokumen: ${response.message()}"
-                    }
-                    handleApiError(errorMsg)
+                    handleApiError("Gagal menghapus dokumen")
                 }
             } catch (e: Exception) {
-                handleApiError("Terjadi kesalahan: ${e.message}")
+                handleApiError("Kesalahan sistem: ${e.message}")
             } finally {
                 showLoading(false)
             }

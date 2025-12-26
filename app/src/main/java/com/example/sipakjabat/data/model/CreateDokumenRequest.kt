@@ -4,18 +4,18 @@ import com.google.gson.annotations.SerializedName
 
 /**
  * Data class untuk request body saat membuat dokumen baru.
- * Nama variabel disesuaikan dengan field yang diterima oleh Backend Spring Boot.
+ * Variabel deskripsi diubah menjadi nullable (String?) agar sesuai dengan input opsional.
  */
 data class CreateDokumenRequest(
     @SerializedName("jenisDokumen")
-    val jenisDokumen: String, // DB: jenis_dokumen
+    val jenisDokumen: String,
 
     @SerializedName("nomorDokumen")
-    val nomorDokumen: String, // DB: nomor_dokumen
+    val nomorDokumen: String,
 
     @SerializedName("tanggalTerbit")
-    val tanggalTerbit: String, // DB: tanggal_terbit (format: YYYY-MM-DD)
+    val tanggalTerbit: String,
 
     @SerializedName("deskripsi")
-    val deskripsi: String // DB: deskripsi
+    val deskripsi: String? // PERBAIKAN: Gunakan String? (nullable)
 )

@@ -30,83 +30,59 @@ class TambahPengajuanActivity : AppCompatActivity() {
     }
 
     private fun setupUI() {
+        // Mengatur toolbar yang ada di XML
         setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.title = "Buat Draf Pengajuan"
+        supportActionBar?.title = "Buat Pengajuan Baru"
         binding.toolbar.setNavigationOnClickListener { finish() }
 
-        binding.btnSimpan.setOnClickListener {
-            simpanPengajuan()
-        }
+        binding.btnSimpan.setOnClickListener { simpanPengajuan() }
     }
 
     private fun setupSpinner() {
-        // Corresponds to the ENUM on the backend
-        val jenisPengajuanList = listOf("KENAIKAN_PANGKAT", "KENAIKAN_JABATAN_FUNGSIONAL")
-        val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, jenisPengajuanList)
+        val options = listOf("REGULER", "FUNGSIONAL", "STRUKTURAL")
+        val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, options)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         binding.spinnerJenis.adapter = adapter
     }
 
     private fun simpanPengajuan() {
-        val jenisPengajuan = binding.spinnerJenis.selectedItem.toString()
-        val pangkatTujuan = binding.etPangkatTujuan.text.toString().trim()
-        val jabatanTujuan = binding.etJabatanTujuan.text.toString().trim()
+        val jenis = binding.spinnerJenis.selectedItem.toString()
+        val pangkat = binding.etPangkatTujuan.text.toString().trim()
+        val jabatan = binding.etJabatanTujuan.text.toString().trim()
 
-        if (pangkatTujuan.isEmpty() || jabatanTujuan.isEmpty()) {
-            Toast.makeText(this, "Semua field wajib diisi", Toast.LENGTH_SHORT).show()
+        if (pangkat.isEmpty() || jabatan.isEmpty()) {
+            Toast.makeText(this, "Harap isi semua kolom", Toast.LENGTH_SHORT).show()
             return
         }
 
-        val request = PengajuanCreateRequestDTO(
-            jenisPengajuan = jenisPengajuan,
-            pangkatTujuan = pangkatTujuan,
-            jabatanTujuan = jabatanTujuan
-        )
+        val request = PengajuanCreateRequestDTO(jenis, pangkat, jabatan)
 
-        setLoadingState(true)
+        // Akses progressBar melalui binding
+        binding.progressBar.visibility = View.VISIBLE
+        binding.btnSimpan.isEnabled = false
 
         lifecycleScope.launch {
             try {
-                val token = tokenManager.getToken()
-                if (token == null) {
-                    Toast.makeText(this@TambahPengajuanActivity, "Sesi berakhir, silakan login kembali", Toast.LENGTH_LONG).show()
-                    return@launch
-                }
-
-                val response = RetrofitClient.instance.createPengajuan("Bearer $token", request)
+                val token = "Bearer ${tokenManager.getToken()}"
+                val response = RetrofitClient.instance.createPengajuan(token, request)
 
                 if (response.isSuccessful) {
-                    Toast.makeText(this@TambahPengajuanActivity, "Draf pengajuan berhasil dibuat", Toast.LENGTH_SHORT).show()
-                    val newPengajuan = response.body()?.data
-                    if (newPengajuan != null) {
-                        // Redirect to detail page to manage attachments
-                        val intent = Intent(this@TambahPengajuanActivity, DetailPengajuanActivity::class.java).apply {
-                            putExtra("PENGAJUAN_ID", newPengajuan.id)
-                        }
-                        startActivity(intent)
-                        finish()
-                    } else {
-                        handleApiError("Gagal mendapatkan data draf baru.")
+                    Toast.makeText(this@TambahPengajuanActivity, "Draf berhasil dibuat", Toast.LENGTH_SHORT).show()
+                    val intent = Intent(this@TambahPengajuanActivity, DetailPengajuanActivity::class.java).apply {
+                        putExtra("PENGAJUAN_ID", response.body()?.data?.id)
                     }
+                    startActivity(intent)
+                    finish()
                 } else {
-                    handleApiError("Gagal membuat draf: ${response.message()}")
+                    Toast.makeText(this@TambahPengajuanActivity, "Gagal: ${response.message()}", Toast.LENGTH_SHORT).show()
                 }
             } catch (e: Exception) {
-                handleApiError("Terjadi kesalahan: ${e.message}")
+                Toast.makeText(this@TambahPengajuanActivity, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
             } finally {
-                setLoadingState(false)
+                binding.progressBar.visibility = View.GONE
+                binding.btnSimpan.isEnabled = true
             }
         }
-    }
-
-    private fun setLoadingState(isLoading: Boolean) {
-        binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
-        binding.btnSimpan.isEnabled = !isLoading
-        binding.btnSimpan.text = if (isLoading) "Menyimpan..." else "SIMPAN & LANJUT"
-    }
-
-    private fun handleApiError(message: String) {
-        Toast.makeText(this, message, Toast.LENGTH_LONG).show()
     }
 }

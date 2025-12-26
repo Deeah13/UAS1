@@ -1,13 +1,11 @@
 package com.example.sipakjabat.viewmodel
 
 import android.util.Log
-import androidx.core.graphics.toColorInt
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.sipakjabat.R // Pastikan import R project Anda
 import com.example.sipakjabat.data.api.RetrofitClient
-import com.example.sipakjabat.data.model.DokumenResponse
-import com.example.sipakjabat.data.model.LampirkanDokumenRequest
-import com.example.sipakjabat.data.model.PengajuanResponse
+import com.example.sipakjabat.data.model.*
 import com.example.sipakjabat.utils.TokenManager
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -22,34 +20,29 @@ data class DetailPengajuanUiState(
     val errorMessage: String? = null,
     val successMessage: String? = null
 ) {
-    val isEditable: Boolean
-        get() = pengajuan?.status == "DRAFT"
+    val isEditable: Boolean get() = pengajuan?.status == "DRAFT"
+    val canAttachDocuments: Boolean get() = pengajuan?.status == "DRAFT"
+    val canSubmit: Boolean get() = pengajuan?.status == "DRAFT" && (pengajuan.lampiran.isNotEmpty())
 
-    val canAttachDocuments: Boolean
-        get() = pengajuan?.status == "DRAFT"
+    // Properti untuk Teks Status
+    val statusText: String get() = when (pengajuan?.status) {
+        "DRAFT" -> "Draft"
+        "SUBMITTED" -> "Menunggu Verifikasi"
+        "APPROVED" -> "Disetujui"
+        "REJECTED" -> "Ditolak"
+        "PERLU_REVISI" -> "Perlu Revisi"
+        else -> "Proses"
+    }
 
-    val canSubmit: Boolean
-        get() = pengajuan?.status == "DRAFT" && (pengajuan.lampiran?.isNotEmpty() ?: false)
-
-    val statusColor: Int
-        get() = when (pengajuan?.status) {
-            "DRAFT" -> "#FFA500".toColorInt()
-            "SUBMITTED" -> "#2196F3".toColorInt()
-            "APPROVED" -> "#4CAF50".toColorInt()
-            "REJECTED" -> "#F44336".toColorInt()
-            "PERLU_REVISI" -> "#FF9800".toColorInt()
-            else -> "#808080".toColorInt() // Gray
-        }
-
-    val statusText: String
-        get() = when (pengajuan?.status) {
-            "DRAFT" -> "Draft"
-            "SUBMITTED" -> "Menunggu Verifikasi"
-            "APPROVED" -> "Disetujui"
-            "REJECTED" -> "Ditolak"
-            "PERLU_REVISI" -> "Perlu Revisi"
-            else -> "Unknown"
-        }
+    // Properti untuk ID Warna (Resource)
+    val statusColorRes: Int get() = when (pengajuan?.status) {
+        "DRAFT" -> R.color.status_draft_bg
+        "SUBMITTED" -> R.color.status_submitted_bg
+        "APPROVED" -> R.color.status_approved_bg
+        "REJECTED" -> R.color.status_rejected_bg
+        "PERLU_REVISI" -> R.color.status_revisi_bg
+        else -> R.color.status_unknown_bg
+    }
 }
 
 class PengajuanDetailViewModel(private val tokenManager: TokenManager) : ViewModel() {
@@ -57,42 +50,26 @@ class PengajuanDetailViewModel(private val tokenManager: TokenManager) : ViewMod
     private val _uiState = MutableStateFlow(DetailPengajuanUiState())
     val uiState: StateFlow<DetailPengajuanUiState> = _uiState.asStateFlow()
 
-    private val apiService = RetrofitClient.instance
-
-    private fun getToken(): String {
-        return "Bearer ${tokenManager.getToken()}"
-    }
+    private fun getAuthToken(): String = "Bearer ${tokenManager.getToken()}"
 
     fun loadDetailPengajuan(pengajuanId: Long) {
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(isLoading = true, errorMessage = null)
-
             try {
-                val response = apiService.getDetailPengajuan(getToken(), pengajuanId)
-
+                val response = RetrofitClient.instance.getDetailPengajuan(getAuthToken(), pengajuanId)
                 if (response.isSuccessful && response.body()?.data != null) {
-                    val pengajuan = response.body()!!.data!!
+                    val data = response.body()!!.data!!
                     _uiState.value = _uiState.value.copy(
                         isLoading = false,
-                        pengajuan = pengajuan,
-                        selectedDocumentIds = pengajuan.lampiran?.map { it.id }?.toSet() ?: emptySet()
+                        pengajuan = data,
+                        selectedDocumentIds = data.lampiran.map { it.id }.toSet()
                     )
-
-                    if (pengajuan.status == "DRAFT") {
-                        loadAvailableDocuments()
-                    }
+                    if (data.status == "DRAFT") loadAvailableDocuments()
                 } else {
-                    _uiState.value = _uiState.value.copy(
-                        isLoading = false,
-                        errorMessage = response.body()?.message ?: "Gagal memuat detail pengajuan"
-                    )
+                    _uiState.value = _uiState.value.copy(isLoading = false, errorMessage = "Gagal memuat data")
                 }
             } catch (e: Exception) {
-                Log.e("PengajuanDetailVM", "Error loading detail: ${e.message}", e)
-                _uiState.value = _uiState.value.copy(
-                    isLoading = false,
-                    errorMessage = "Terjadi kesalahan: ${e.message}"
-                )
+                _uiState.value = _uiState.value.copy(isLoading = false, errorMessage = e.message)
             }
         }
     }
@@ -100,96 +77,48 @@ class PengajuanDetailViewModel(private val tokenManager: TokenManager) : ViewMod
     private fun loadAvailableDocuments() {
         viewModelScope.launch {
             try {
-                val response = apiService.getMyDocuments(getToken())
-
-                if (response.isSuccessful && response.body()?.data != null) {
-                    _uiState.value = _uiState.value.copy(
-                        availableDocuments = response.body()!!.data!!
-                    )
+                val response = RetrofitClient.instance.getMyDocuments(getAuthToken())
+                if (response.isSuccessful) {
+                    _uiState.value = _uiState.value.copy(availableDocuments = response.body()?.data ?: emptyList())
                 }
-            } catch (e: Exception) {
-                Log.e("PengajuanDetailVM", "Error loading documents: ${e.message}", e)
-            }
+            } catch (e: Exception) { Log.e("VM", "Load docs error: ${e.message}") }
         }
     }
 
-    fun toggleDocumentSelection(documentId: Long) {
-        val currentSelection = _uiState.value.selectedDocumentIds.toMutableSet()
-        if (currentSelection.contains(documentId)) {
-            currentSelection.remove(documentId)
-        } else {
-            currentSelection.add(documentId)
-        }
-        _uiState.value = _uiState.value.copy(selectedDocumentIds = currentSelection)
+    fun toggleDocumentSelection(id: Long) {
+        val current = _uiState.value.selectedDocumentIds.toMutableSet()
+        if (current.contains(id)) current.remove(id) else current.add(id)
+        _uiState.value = _uiState.value.copy(selectedDocumentIds = current)
     }
 
     fun attachDocuments(pengajuanId: Long) {
-        val selectedIds = _uiState.value.selectedDocumentIds
-
         viewModelScope.launch {
-            _uiState.value = _uiState.value.copy(isLoading = true, errorMessage = null)
-
+            _uiState.value = _uiState.value.copy(isLoading = true)
             try {
-                val request = LampirkanDokumenRequest(selectedIds.toList())
-                val response = apiService.lampirkanDokumen(getToken(), pengajuanId, request)
-
-                if (response.isSuccessful && response.body()?.data != null) {
-                    val updatedPengajuan = response.body()!!.data!!
-                    _uiState.value = _uiState.value.copy(
-                        isLoading = false,
-                        pengajuan = updatedPengajuan,
-                        successMessage = "Dokumen berhasil dilampirkan",
-                        selectedDocumentIds = updatedPengajuan.lampiran?.map { it.id }?.toSet() ?: emptySet()
-                    )
-                } else {
-                    _uiState.value = _uiState.value.copy(
-                        isLoading = false,
-                        errorMessage = response.body()?.message ?: "Gagal melampirkan dokumen"
-                    )
+                val request = LampirkanDokumenRequest(dokumenIds = _uiState.value.selectedDocumentIds.toList())
+                val response = RetrofitClient.instance.lampirkanDokumen(getAuthToken(), pengajuanId, request)
+                if (response.isSuccessful) {
+                    _uiState.value = _uiState.value.copy(isLoading = false, successMessage = "Lampiran diperbarui")
+                    loadDetailPengajuan(pengajuanId)
                 }
-            } catch (e: Exception) {
-                Log.e("PengajuanDetailVM", "Error attaching documents: ${e.message}", e)
-                _uiState.value = _uiState.value.copy(
-                    isLoading = false,
-                    errorMessage = "Terjadi kesalahan: ${e.message}"
-                )
-            }
+            } catch (e: Exception) { _uiState.value = _uiState.value.copy(isLoading = false, errorMessage = e.message) }
         }
     }
 
     fun submitPengajuan(pengajuanId: Long) {
         viewModelScope.launch {
-            _uiState.value = _uiState.value.copy(isLoading = true, errorMessage = null)
-
+            _uiState.value = _uiState.value.copy(isLoading = true)
             try {
-                val response = apiService.submitPengajuan(getToken(), pengajuanId)
-
-                if (response.isSuccessful && response.body()?.data != null) {
-                    _uiState.value = _uiState.value.copy(
-                        isLoading = false,
-                        pengajuan = response.body()!!.data!!,
-                        successMessage = "Pengajuan berhasil disubmit"
-                    )
+                val response = RetrofitClient.instance.submitPengajuan(getAuthToken(), pengajuanId)
+                if (response.isSuccessful) {
+                    _uiState.value = _uiState.value.copy(isLoading = false, successMessage = "Pengajuan dikirim")
+                    loadDetailPengajuan(pengajuanId)
                 } else {
-                    _uiState.value = _uiState.value.copy(
-                        isLoading = false,
-                        errorMessage = response.body()?.message ?: "Gagal submit pengajuan"
-                    )
+                    _uiState.value = _uiState.value.copy(isLoading = false, errorMessage = "Gagal: Syarat Dokumen (SK Pangkat/SKP) belum lengkap")
                 }
-            } catch (e: Exception) {
-                Log.e("PengajuanDetailVM", "Error submitting: ${e.message}", e)
-                _uiState.value = _uiState.value.copy(
-                    isLoading = false,
-                    errorMessage = "Terjadi kesalahan: ${e.message}"
-                )
-            }
+            } catch (e: Exception) { _uiState.value = _uiState.value.copy(isLoading = false, errorMessage = e.message) }
         }
     }
 
-    fun clearMessages() {
-        _uiState.value = _uiState.value.copy(
-            errorMessage = null,
-            successMessage = null
-        )
-    }
+    fun clearMessages() { _uiState.value = _uiState.value.copy(errorMessage = null, successMessage = null) }
 }
