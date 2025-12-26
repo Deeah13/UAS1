@@ -1,9 +1,13 @@
 package com.example.sipakjabat
 
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
+import android.view.Gravity
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.res.ResourcesCompat
 import androidx.lifecycle.lifecycleScope
 import com.example.sipakjabat.data.api.RetrofitClient
 import com.example.sipakjabat.data.model.ChangePasswordRequest
@@ -18,10 +22,9 @@ class ProfileActivity : AppCompatActivity() {
     private lateinit var binding: ActivityProfileBinding
     private lateinit var tokenManager: TokenManager
 
-    // ProfileActivity.kt (Jika ada)
     override fun onResume() {
         super.onResume()
-        loadProfileData() // Pastikan nama fungsi sesuai dengan fungsi pengambil API Anda
+        loadProfileData() // Memastikan data terbaru dimuat saat kembali dari Edit Profil
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -38,16 +41,22 @@ class ProfileActivity : AppCompatActivity() {
 
     private fun setupToolbar() {
         setSupportActionBar(binding.toolbar)
-        binding.toolbar.setNavigationOnClickListener { finish() }
+        // 1. Menghapus judul default "sipakjabat" agar tidak tumpang tindih dengan UI kustom
+        supportActionBar?.setDisplayShowTitleEnabled(false)
+
+        // 2. Mengaktifkan fungsi klik pada ImageButton back manual
+        binding.btnBack.setOnClickListener {
+            finish()
+        }
     }
 
     private fun setupButtons() {
-        // Navigasi ke EditProfileActivity
+        // Navigasi ke halaman Edit Profile
         binding.btnEditProfile.setOnClickListener {
             startActivity(Intent(this, EditProfileActivity::class.java))
         }
 
-        // Memanggil dialog Change Password
+        // Menampilkan dialog ganti password
         binding.btnChangePassword.setOnClickListener {
             showChangePasswordDialog()
         }
@@ -62,14 +71,16 @@ class ProfileActivity : AppCompatActivity() {
                 if (response.isSuccessful) {
                     val profile = response.body()?.data
                     profile?.let {
+                        // Menampilkan data pegawai ke komponen UI
                         binding.tvProfileName.text = it.namaLengkap
                         binding.tvProfileNip.text = "NIP: ${it.nip}"
                         binding.tvProfileJabatan.text = it.jabatan ?: "-"
                         binding.tvProfilePangkat.text = it.pangkatGolongan ?: "-"
+                        binding.tvProfileEmail.text = it.email ?: "-" // Menampilkan email
                     }
                 }
             } catch (e: Exception) {
-                Toast.makeText(this@ProfileActivity, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@ProfileActivity, "Gagal memuat profil: ${e.message}", Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -77,14 +88,26 @@ class ProfileActivity : AppCompatActivity() {
     private fun showChangePasswordDialog() {
         val dialogBinding = DialogChangePasswordBinding.inflate(layoutInflater)
 
+        // 3. Membuat judul kustom dengan font Poppins untuk dialog
+        val titleView = TextView(this).apply {
+            text = "Ganti Password"
+            textSize = 20f
+            setPadding(64, 48, 64, 0)
+            setTextColor(Color.parseColor("#014488"))
+            gravity = Gravity.START
+            typeface = ResourcesCompat.getFont(this@ProfileActivity, R.font.poppins_bold)
+        }
+
         MaterialAlertDialogBuilder(this)
-            .setTitle("Ganti Password")
+            .setCustomTitle(titleView)
             .setView(dialogBinding.root)
             .setPositiveButton("Simpan") { _, _ ->
                 val oldPass = dialogBinding.etOldPassword.text.toString()
                 val newPass = dialogBinding.etNewPassword.text.toString()
                 if (oldPass.isNotEmpty() && newPass.isNotEmpty()) {
                     performChangePassword(oldPass, newPass)
+                } else {
+                    Toast.makeText(this, "Password tidak boleh kosong", Toast.LENGTH_SHORT).show()
                 }
             }
             .setNegativeButton("Batal", null)
@@ -95,12 +118,20 @@ class ProfileActivity : AppCompatActivity() {
         lifecycleScope.launch {
             try {
                 val token = tokenManager.getToken() ?: return@launch
-                val request = ChangePasswordRequest(old, new)
+
+                // 4. Mengirim request dengan variabel yang sesuai dengan backend (currentPassword & newPassword)
+                val request = ChangePasswordRequest(currentPassword = old, newPassword = new)
                 val response = RetrofitClient.instance.changePassword("Bearer $token", request)
+
                 if (response.isSuccessful) {
-                    Toast.makeText(this@ProfileActivity, "Password diganti!", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@ProfileActivity, "Password berhasil diganti!", Toast.LENGTH_SHORT).show()
+                } else {
+                    // Menangani error jika password lama salah atau tidak sesuai kriteria
+                    Toast.makeText(this@ProfileActivity, "Gagal: Password lama mungkin salah", Toast.LENGTH_LONG).show()
                 }
-            } catch (e: Exception) { /* handle error */ }
+            } catch (e: Exception) {
+                Toast.makeText(this@ProfileActivity, "Terjadi kesalahan koneksi", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 }

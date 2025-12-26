@@ -8,44 +8,55 @@
     android:clickable="true"
     android:focusable="true"
     android:foreground="?android:attr/selectableItemBackground"
-    app:cardCornerRadius="12dp"
-    app:cardElevation="2dp">
+    app:cardCornerRadius="16dp"
+    app:cardElevation="2dp"
+    app:strokeColor="#E2E8F0"
+    app:strokeWidth="1dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="16dp">
+        android:orientation="horizontal"
+        android:padding="16dp"
+        android:gravity="center_vertical">
 
-        <TextView
-            android:id="@+id/tvJenis"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="Jenis Pengajuan"
-            android:textColor="#2D3748"
-            android:textSize="16sp"
-            android:textStyle="bold" />
+            android:layout_weight="1"
+            android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/tvTanggal"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Tanggal Pengajuan"
-            android:textColor="#A0AEC0"
-            android:textSize="12sp" />
+            <TextView
+                android:id="@+id/tvJenis"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/poppins_bold"
+                android:text="Jenis Pengajuan"
+                android:textColor="#014488"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/tvTanggal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/poppins_regular"
+                android:text="Tanggal"
+                android:textColor="#718096"
+                android:textSize="12sp" />
+        </LinearLayout>
 
         <TextView
             android:id="@+id/tvStatus"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:background="#EBF8FF"
-            android:paddingHorizontal="8dp"
-            android:paddingVertical="4dp"
+            android:background="@drawable/bg_header_modern"
+            android:backgroundTint="#F0F7FF"
+            android:fontFamily="@font/poppins_bold"
+            android:paddingHorizontal="12dp"
+            android:paddingVertical="6dp"
             android:text="STATUS"
-            android:textColor="#3182CE"
-            android:textSize="12sp"
-            android:textStyle="bold" />
+            android:textColor="#014488"
+            android:textSize="10sp" />
 
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

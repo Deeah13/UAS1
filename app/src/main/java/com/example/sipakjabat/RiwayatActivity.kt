@@ -23,7 +23,6 @@ class RiwayatActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         tokenManager = TokenManager(this)
-
         setupUI()
         setupRecyclerView()
     }
@@ -35,9 +34,8 @@ class RiwayatActivity : AppCompatActivity() {
 
     private fun setupUI() {
         setSupportActionBar(binding.toolbar)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.title = "Riwayat Pengajuan"
-        binding.toolbar.setNavigationOnClickListener { finish() }
+        supportActionBar?.setDisplayShowTitleEnabled(false)
+        binding.btnBack.setOnClickListener { finish() }
 
         binding.fabAddPengajuan.setOnClickListener {
             startActivity(Intent(this, TambahPengajuanActivity::class.java))
@@ -56,26 +54,15 @@ class RiwayatActivity : AppCompatActivity() {
         showLoading(true)
         lifecycleScope.launch {
             try {
-                val token = tokenManager.getToken()
-                if (token == null) {
-                    redirectToLogin()
-                    return@launch
-                }
-
+                val token = tokenManager.getToken() ?: return@launch
                 val response = RetrofitClient.instance.getRiwayatPengajuan("Bearer $token")
-
                 if (response.isSuccessful) {
                     val dataList = response.body()?.data ?: emptyList()
                     pengajuanAdapter.updateData(dataList)
                     binding.tvEmpty.visibility = if (dataList.isEmpty()) View.VISIBLE else View.GONE
-                } else if (response.code() == 401) {
-                    Toast.makeText(this@RiwayatActivity, "Sesi berakhir, silakan login kembali", Toast.LENGTH_LONG).show()
-                    redirectToLogin()
-                } else {
-                    handleApiError("Gagal memuat riwayat: ${response.message()}")
                 }
             } catch (e: Exception) {
-                handleApiError("Terjadi kesalahan jaringan: ${e.message}")
+                Toast.makeText(this@RiwayatActivity, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
             } finally {
                 showLoading(false)
             }
@@ -85,20 +72,5 @@ class RiwayatActivity : AppCompatActivity() {
     private fun showLoading(isLoading: Boolean) {
         binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
         binding.rvPengajuan.visibility = if (isLoading) View.GONE else View.VISIBLE
-    }
-
-    private fun handleApiError(message: String) {
-        binding.tvEmpty.text = message
-        binding.tvEmpty.visibility = View.VISIBLE
-        Toast.makeText(this, message, Toast.LENGTH_LONG).show()
-    }
-
-    private fun redirectToLogin() {
-        tokenManager.clear()
-        val intent = Intent(this, MainActivity::class.java).apply {
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-        }
-        startActivity(intent)
-        finish()
     }
 }

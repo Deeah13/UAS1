@@ -1,335 +1,182 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="#F1F5F9">
+    android:background="#F0F7FF">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
+        android:layout_height="220dp"
         android:background="#014488"
-        android:elevation="4dp"
-        app:titleTextColor="@android:color/white"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-        app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
+        android:gravity="top"
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <FrameLayout
+    <ImageButton
+        android:id="@+id/btnBack"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="32dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:src="@drawable/ic_arrow_back"
+        app:tint="#FFFFFF"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tvTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/poppins_bold"
+        android:text="Detail Pengajuan"
+        android:textColor="#FFFFFF"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="@id/btnBack"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/btnBack" />
+
+    <ScrollView
+        android:id="@+id/contentLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="0dp"
+        android:clipToPadding="false"
+        android:paddingBottom="24dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvTitle">
 
-        <ScrollView
-            android:id="@+id/contentLayout"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scrollbars="none"
-            android:visibility="visible">
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingHorizontal="24dp"
+            android:paddingTop="24dp">
 
-            <LinearLayout
+            <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="20dp">
+                app:cardCornerRadius="24dp"
+                app:cardElevation="12dp"
+                app:strokeColor="#C5A059"
+                app:strokeWidth="2dp">
 
-                <com.google.android.material.card.MaterialCardView
-                    android:id="@+id/cardStatus"
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginBottom="24dp"
-                    app:cardCornerRadius="20dp"
-                    app:cardElevation="0dp"
-                    app:strokeColor="#CBD5E1"
-                    app:strokeWidth="1dp">
+                    android:orientation="vertical"
+                    android:padding="24dp">
 
-                    <TextView
-                        android:id="@+id/tvStatus"
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/cardStatus"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:paddingHorizontal="24dp"
-                        android:paddingVertical="8dp"
-                        android:textSize="14sp"
-                        android:textStyle="bold"
-                        android:textAllCaps="true"
-                        android:textColor="#014488"
-                        tools:text="Status: Draft" />
-
-                </com.google.android.material.card.MaterialCardView>
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Informasi Pengajuan"
-                    android:textSize="14sp"
-                    android:textStyle="bold"
-                    android:textColor="#014488"
-                    android:layout_marginBottom="12dp" />
-
-                <com.google.android.material.card.MaterialCardView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="20dp"
-                    app:cardCornerRadius="16dp"
-                    app:cardElevation="3dp">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:padding="20dp">
-
+                        android:layout_gravity="center"
+                        android:layout_marginBottom="24dp"
+                        app:cardCornerRadius="20dp"
+                        app:cardElevation="0dp">
                         <TextView
+                            android:id="@+id/tvStatus"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Jenis Pengajuan"
-                            android:textSize="11sp"
-                            android:textColor="#64748B" />
+                            android:fontFamily="@font/poppins_bold"
+                            android:paddingHorizontal="24dp"
+                            android:paddingVertical="8dp"
+                            android:textAllCaps="true"
+                            android:textColor="#FFFFFF"
+                            tools:text="DRAFT" />
+                    </com.google.android.material.card.MaterialCardView>
 
-                        <TextView
-                            android:id="@+id/tvJenisPengajuan"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:textSize="17sp"
-                            android:textStyle="bold"
-                            android:textColor="#1E293B"
-                            android:layout_marginBottom="16dp"
-                            tools:text="Kenaikan Pangkat Reguler" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/poppins_bold"
+                        android:text="Informasi Pengajuan"
+                        android:textColor="#014488"
+                        android:textSize="14sp" />
 
-                        <View
-                            android:layout_width="match_parent"
-                            android:layout_height="1dp"
-                            android:background="#F1F5F9"
-                            android:layout_marginBottom="16dp"/>
+                    <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#E2E8F0" android:layout_marginVertical="12dp" />
 
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal">
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Jenis Pengajuan" android:textColor="#718096" android:textSize="11sp" />
+                    <TextView android:id="@+id/tvJenisPengajuan" android:layout_width="match_parent" android:layout_height="wrap_content" android:fontFamily="@font/poppins_bold" android:textColor="#2D3748" android:textSize="16sp" android:layout_marginBottom="12dp"/>
 
-                            <LinearLayout
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:orientation="vertical">
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="Pangkat Tujuan"
-                                    android:textSize="11sp"
-                                    android:textColor="#64748B" />
-                                <TextView
-                                    android:id="@+id/tvTargetPangkat"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:textSize="14sp"
-                                    android:textStyle="bold"
-                                    android:textColor="#1E293B"
-                                    tools:text="Penata (III/c)" />
-                            </LinearLayout>
-
-                            <LinearLayout
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:orientation="vertical">
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="Jabatan Tujuan"
-                                    android:textSize="11sp"
-                                    android:textColor="#64748B" />
-                                <TextView
-                                    android:id="@+id/tvTargetJabatan"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:textSize="14sp"
-                                    android:textStyle="bold"
-                                    android:textColor="#1E293B"
-                                    tools:text="Ahli Muda" />
-                            </LinearLayout>
+                    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal">
+                        <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:orientation="vertical">
+                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Pangkat Tujuan" android:textColor="#718096" android:textSize="11sp" />
+                            <TextView android:id="@+id/tvTargetPangkat" android:layout_width="wrap_content" android:layout_height="wrap_content" android:fontFamily="@font/poppins_bold" android:textColor="#2D3748" />
+                        </LinearLayout>
+                        <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:orientation="vertical">
+                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Jabatan Tujuan" android:textColor="#718096" android:textSize="11sp" />
+                            <TextView android:id="@+id/tvTargetJabatan" android:layout_width="wrap_content" android:layout_height="wrap_content" android:fontFamily="@font/poppins_bold" android:textColor="#2D3748" />
                         </LinearLayout>
                     </LinearLayout>
-                </com.google.android.material.card.MaterialCardView>
 
-                <com.google.android.material.card.MaterialCardView
-                    android:id="@+id/cardSyarat"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="24dp"
-                    app:cardBackgroundColor="#E0F2FE"
-                    app:cardCornerRadius="12dp"
-                    app:cardElevation="0dp"
-                    app:strokeColor="#0284C7"
-                    app:strokeWidth="1dp"
-                    android:visibility="visible">
+                    <com.google.android.material.card.MaterialCardView android:id="@+id/cardSyarat" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="20dp" app:cardBackgroundColor="#F0F7FF" app:cardCornerRadius="12dp" app:cardElevation="0dp" app:strokeColor="#014488" app:strokeWidth="1dp">
+                        <TextView android:id="@+id/tvSyaratDokumen" android:layout_width="match_parent" android:layout_height="wrap_content" android:padding="12dp" android:fontFamily="@font/poppins_regular" android:textColor="#014488" android:textSize="12sp" />
+                    </com.google.android.material.card.MaterialCardView>
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:padding="12dp"
-                        android:gravity="center_vertical">
+                    <RelativeLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="24dp">
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:fontFamily="@font/poppins_bold" android:text="Dokumen Lampiran" android:textColor="#014488" />
+                        <Button android:id="@+id/btnKelolaDokumen" style="@style/Widget.MaterialComponents.Button.TextButton" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_alignParentEnd="true" android:text="Kelola" android:textColor="#C5A059" app:iconTint="#C5A059" />
+                    </RelativeLayout>
 
-                        <ImageView
-                            android:layout_width="22dp"
-                            android:layout_height="22dp"
-                            android:src="@android:drawable/ic_dialog_info"
-                            app:tint="#0284C7" />
-
-                        <TextView
-                            android:id="@+id/tvSyaratDokumen"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="12dp"
-                            android:textColor="#0C4A6E"
-                            android:textSize="13sp"
-                            android:lineSpacingExtra="2dp"
-                            tools:text="Wajib melampirkan: SK Pangkat dan SKP." />
-
-                    </LinearLayout>
-                </com.google.android.material.card.MaterialCardView>
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="12dp">
+                    <androidx.recyclerview.widget.RecyclerView android:id="@+id/rvDokumenLampiran" android:layout_width="match_parent" android:layout_height="wrap_content" android:overScrollMode="never" />
 
                     <TextView
-                        android:layout_width="wrap_content"
+                        android:id="@+id/tvLampiranEmpty"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:text="Dokumen Lampiran"
-                        android:textSize="14sp"
-                        android:textStyle="bold"
-                        android:textColor="#014488" />
-
-                    <Button
-                        android:id="@+id/btnKelolaDokumen"
-                        style="@style/Widget.MaterialComponents.Button.TextButton"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentEnd="true"
-                        android:text="Kelola Lampiran"
-                        android:textColor="#2E7D32"
+                        android:text="Belum ada dokumen lampiran"
+                        android:textColor="#718096"
                         android:textSize="12sp"
-                        app:icon="@android:drawable/ic_menu_add"
-                        app:iconSize="14dp"
-                        app:iconTint="#2E7D32" />
-                </RelativeLayout>
+                        android:fontFamily="@font/poppins_regular"
+                        android:visibility="gone"
+                        android:layout_marginTop="8dp"/>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
 
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/rvDokumenLampiran"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"
-                    android:overScrollMode="never"
-                    tools:listitem="@layout/item_dokumen_lampiran"
-                    tools:itemCount="1" />
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardCatatan"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                app:cardBackgroundColor="#F0F9FF"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="4dp"
+                app:strokeColor="#014488"
+                app:strokeWidth="1dp"
+                android:visibility="gone">
+                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="16dp">
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:fontFamily="@font/poppins_bold" android:text="Pesan Admin / Verifikator" android:textColor="#014488" android:textSize="13sp" />
+                    <TextView android:id="@+id/tvCatatanVerifikator" android:layout_width="match_parent" android:layout_height="wrap_content" android:fontFamily="@font/poppins_regular" android:textColor="#2D3748" android:layout_marginTop="4dp" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
 
-                <com.google.android.material.card.MaterialCardView
-                    android:id="@+id/cardCatatan"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"
-                    app:cardBackgroundColor="#F0F9FF"
-                    app:cardCornerRadius="12dp"
-                    app:cardElevation="0dp"
-                    app:strokeColor="#0EA5E9"
-                    app:strokeWidth="1dp"
-                    android:visibility="gone">
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardPenolakan"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                app:cardBackgroundColor="#FEF2F2"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="4dp"
+                app:strokeColor="#DC2626"
+                app:strokeWidth="1dp"
+                android:visibility="gone">
+                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="16dp">
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:fontFamily="@font/poppins_bold" android:text="Alasan Penolakan" android:textColor="#DC2626" android:textSize="13sp" />
+                    <TextView android:id="@+id/tvAlasanPenolakan" android:layout_width="match_parent" android:layout_height="wrap_content" android:fontFamily="@font/poppins_regular" android:textColor="#7F1D1D" android:layout_marginTop="4dp" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:padding="16dp">
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Catatan Verifikator"
-                            android:textColor="#0369A1"
-                            android:textStyle="bold"
-                            android:textSize="12sp"
-                            android:layout_marginBottom="4dp"/>
-                        <TextView
-                            android:id="@+id/tvCatatanVerifikator"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:textColor="#0C4A6E"
-                            android:textSize="14sp" />
-                    </LinearLayout>
-                </com.google.android.material.card.MaterialCardView>
+            <com.google.android.material.button.MaterialButton android:id="@+id/btnSubmit" android:layout_width="match_parent" android:layout_height="56dp" android:layout_marginTop="24dp" android:backgroundTint="#014488" android:fontFamily="@font/poppins_bold" android:text="KIRIM PENGAJUAN" app:cornerRadius="12dp" />
+            <com.google.android.material.button.MaterialButton android:id="@+id/btnDelete" style="@style/Widget.MaterialComponents.Button.OutlinedButton" android:layout_width="match_parent" android:layout_height="56dp" android:layout_marginTop="12dp" android:fontFamily="@font/poppins_bold" android:text="HAPUS DRAF" android:textColor="#DC2626" app:cornerRadius="12dp" app:strokeColor="#DC2626" android:layout_marginBottom="32dp" />
 
-                <com.google.android.material.card.MaterialCardView
-                    android:id="@+id/cardPenolakan"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="24dp"
-                    app:cardBackgroundColor="#FEF2F2"
-                    app:cardCornerRadius="12dp"
-                    app:cardElevation="0dp"
-                    app:strokeColor="#EF4444"
-                    app:strokeWidth="1dp"
-                    android:visibility="gone">
+        </LinearLayout>
+    </ScrollView>
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:padding="16dp">
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Alasan Penolakan"
-                            android:textColor="#991B1B"
-                            android:textStyle="bold"
-                            android:textSize="12sp"
-                            android:layout_marginBottom="4dp"/>
-                        <TextView
-                            android:id="@+id/tvAlasanPenolakan"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:textColor="#7F1D1D"
-                            android:textSize="14sp" />
-                    </LinearLayout>
-                </com.google.android.material.card.MaterialCardView>
+    <ProgressBar android:id="@+id/progressBar" android:layout_width="wrap_content" android:layout_height="wrap_content" app:layout_constraintBottom_toBottomOf="parent" app:layout_constraintEnd_toEndOf="parent" app:layout_constraintStart_toStartOf="parent" app:layout_constraintTop_toTopOf="parent" android:visibility="gone" />
 
-                <Button
-                    android:id="@+id/btnSubmit"
-                    android:layout_width="match_parent"
-                    android:layout_height="60dp"
-                    android:text="KIRIM PENGAJUAN"
-                    android:textSize="15sp"
-                    android:textStyle="bold"
-                    app:cornerRadius="16dp"
-                    android:backgroundTint="#014488"
-                    android:layout_marginBottom="12dp" />
-
-                <Button
-                    android:id="@+id/btnDelete"
-                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                    android:layout_width="match_parent"
-                    android:layout_height="60dp"
-                    android:text="HAPUS DRAF"
-                    android:textColor="#DC2626"
-                    app:strokeColor="#DC2626"
-                    app:cornerRadius="16dp"
-                    android:layout_marginBottom="32dp"
-                    android:visibility="gone" />
-
-            </LinearLayout>
-
-        </ScrollView>
-
-        <ProgressBar
-            android:id="@+id/progressBar"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_gravity="center"
-            android:visibility="gone" />
-
-    </FrameLayout>
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

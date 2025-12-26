@@ -33,11 +33,15 @@ class TambahDokumenActivity : AppCompatActivity() {
     }
 
     private fun setupUI() {
+        // Upgrade Toolbar & Navigation
         setSupportActionBar(binding.toolbar)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.title = "Tambah Dokumen"
-        binding.toolbar.setNavigationOnClickListener { finish() }
+        // Menonaktifkan judul default agar tidak tumpang tindih dengan TextView kustom
+        supportActionBar?.setDisplayShowTitleEnabled(false)
 
+        // Klik tombol back manual sesuai desain header tinggi baru
+        binding.btnBack.setOnClickListener { finish() }
+
+        // Listener untuk elemen input
         binding.etTanggal.setOnClickListener { showDatePicker() }
         binding.btnSimpan.setOnClickListener { simpanDokumen() }
     }
@@ -85,7 +89,6 @@ class TambahDokumenActivity : AppCompatActivity() {
 
         lifecycleScope.launch {
             try {
-                // Perbaikan Argument type mismatch dengan menangani nullability token
                 val token = tokenManager.getToken()
                 if (token != null) {
                     val response = RetrofitClient.instance.createDocument("Bearer $token", request)
@@ -110,7 +113,7 @@ class TambahDokumenActivity : AppCompatActivity() {
     }
 
     private fun setLoadingState(isLoading: Boolean) {
-        // Sekarang binding.progressBar sudah valid karena ada di XML
+        // Kontrol visibilitas progressBar melalui binding
         binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
         binding.btnSimpan.isEnabled = !isLoading
         binding.btnSimpan.text = if (isLoading) "Menyimpan..." else "SIMPAN DOKUMEN"

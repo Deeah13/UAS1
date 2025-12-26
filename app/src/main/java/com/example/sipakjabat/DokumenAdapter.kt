@@ -23,6 +23,15 @@ class DokumenAdapter(
             binding.tvJenisDokumen.text = document.jenisDokumen
             binding.tvNomorDokumen.text = "No: ${document.nomorDokumen}"
             binding.tvTanggalTerbit.text = "Terbit: ${document.tanggalTerbit}"
+
+            // Logika Menampilkan Deskripsi (Ditambahkan)
+            if (!document.deskripsi.isNullOrBlank()) {
+                binding.tvDeskripsi.visibility = View.VISIBLE
+                binding.tvDeskripsi.text = document.deskripsi
+            } else {
+                binding.tvDeskripsi.visibility = View.GONE
+            }
+
             binding.btnDelete.visibility = if (showDelete) View.VISIBLE else View.GONE
             binding.btnDelete.setOnClickListener { clickListener(document) }
         }

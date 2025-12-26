@@ -24,18 +24,14 @@ class TambahPengajuanActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         tokenManager = TokenManager(this)
-
         setupUI()
         setupSpinner()
     }
 
     private fun setupUI() {
-        // Mengatur toolbar yang ada di XML
         setSupportActionBar(binding.toolbar)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.title = "Buat Pengajuan Baru"
-        binding.toolbar.setNavigationOnClickListener { finish() }
-
+        supportActionBar?.setDisplayShowTitleEnabled(false)
+        binding.btnBack.setOnClickListener { finish() }
         binding.btnSimpan.setOnClickListener { simpanPengajuan() }
     }
 
@@ -57,25 +53,19 @@ class TambahPengajuanActivity : AppCompatActivity() {
         }
 
         val request = PengajuanCreateRequestDTO(jenis, pangkat, jabatan)
-
-        // Akses progressBar melalui binding
-        binding.progressBar.visibility = View.VISIBLE
+        binding.progressBar.visibility = View.VISIBLE // Memanggil ID progressBar dari binding
         binding.btnSimpan.isEnabled = false
 
         lifecycleScope.launch {
             try {
                 val token = "Bearer ${tokenManager.getToken()}"
                 val response = RetrofitClient.instance.createPengajuan(token, request)
-
                 if (response.isSuccessful) {
-                    Toast.makeText(this@TambahPengajuanActivity, "Draf berhasil dibuat", Toast.LENGTH_SHORT).show()
                     val intent = Intent(this@TambahPengajuanActivity, DetailPengajuanActivity::class.java).apply {
                         putExtra("PENGAJUAN_ID", response.body()?.data?.id)
                     }
                     startActivity(intent)
                     finish()
-                } else {
-                    Toast.makeText(this@TambahPengajuanActivity, "Gagal: ${response.message()}", Toast.LENGTH_SHORT).show()
                 }
             } catch (e: Exception) {
                 Toast.makeText(this@TambahPengajuanActivity, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
