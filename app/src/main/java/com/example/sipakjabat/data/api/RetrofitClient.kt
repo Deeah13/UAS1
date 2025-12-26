@@ -8,7 +8,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 object RetrofitClient {
     // Alamat IP 10.0.2.2 untuk emulator mengakses localhost komputer
     // Pastikan menggunakan IP dari Wireless LAN adapter Wi-Fi Anda
-    private const val BASE_URL = "http://192.168.1.6:8080/"
+    private const val BASE_URL = "http://192.168.1.7:8080/"
 
     val instance: ApiService by lazy {
         // Logging agar kita bisa melihat JSON yang dikirim/diterima di Logcat

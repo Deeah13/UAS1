@@ -2,7 +2,6 @@ package com.example.sipakjabat
 
 import android.os.Bundle
 import android.view.View
-import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
@@ -32,17 +31,17 @@ class EditProfileActivity : AppCompatActivity() {
     }
 
     private fun setupUI() {
+        // --- MENGHAPUS JUDUL SIPAKJABAT HITAM ---
         setSupportActionBar(binding.toolbar)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.title = "Edit Profil"
-        binding.toolbar.setNavigationOnClickListener { finish() }
+        supportActionBar?.setDisplayHomeAsUpEnabled(false) // Kita sudah punya btnBack kustom
+        supportActionBar?.setDisplayShowTitleEnabled(false) // Menonaktifkan judul default aktivitas
 
-        // Listener untuk tombol simpan profil
+        binding.btnBack.setOnClickListener { finish() }
+
         binding.btnSimpan.setOnClickListener {
             performUpdate()
         }
 
-        // Listener untuk tombol ganti password (Dialog)
         binding.btnGantiPassword.setOnClickListener {
             showChangePasswordDialog()
         }
@@ -58,16 +57,16 @@ class EditProfileActivity : AppCompatActivity() {
                 if (response.isSuccessful) {
                     val profile = response.body()?.data
                     profile?.let {
-                        // Data yang bisa diedit
-                        binding.etNamaLengkap.setText(it.namaLengkap)
-                        binding.etEmail.setText(it.email)
+                        // Data header kartu
+                        binding.tvProfileName.text = it.namaLengkap
+                        binding.tvProfileNip.text = "NIP: ${it.nip}"
 
-                        // Data Read-Only (Sesuai ketentuan backend)
+                        // Data Read-Only & Editable
                         binding.etNip.setText(it.nip)
                         binding.etJabatan.setText(it.jabatan ?: "-")
                         binding.etPangkat.setText(it.pangkatGolongan ?: "-")
-                        // Menambahkan pangkat jika ada di layout
-                        // binding.etPangkat.setText(it.pangkatGolongan ?: "-")
+                        binding.etNamaLengkap.setText(it.namaLengkap)
+                        binding.etEmail.setText(it.email)
                     }
                 }
             } catch (e: Exception) {
@@ -97,7 +96,7 @@ class EditProfileActivity : AppCompatActivity() {
 
                 if (response.isSuccessful) {
                     Toast.makeText(this@EditProfileActivity, "Profil berhasil diperbarui", Toast.LENGTH_SHORT).show()
-                    finish()
+                    finish() // Kembali ke halaman profil
                 } else {
                     Toast.makeText(this@EditProfileActivity, "Gagal memperbarui profil", Toast.LENGTH_SHORT).show()
                 }
@@ -110,19 +109,20 @@ class EditProfileActivity : AppCompatActivity() {
     }
 
     private fun showChangePasswordDialog() {
+        // Menggunakan View Binding untuk dialog agar tidak ada error 'Cannot infer type'
         val dialogBinding = DialogChangePasswordBinding.inflate(layoutInflater)
 
         MaterialAlertDialogBuilder(this)
-            .setTitle("Ganti Password")
+            .setTitle("Ganti Password Akun")
             .setView(dialogBinding.root)
-            .setPositiveButton("Simpan") { _, _ ->
-                val oldPass = dialogBinding.etOldPassword.text.toString()
-                val newPass = dialogBinding.etNewPassword.text.toString()
+            .setPositiveButton("Simpan Perubahan") { _, _ ->
+                val oldPass = dialogBinding.etOldPassword.text.toString().trim()
+                val newPass = dialogBinding.etNewPassword.text.toString().trim()
 
                 if (oldPass.isNotEmpty() && newPass.isNotEmpty()) {
                     performChangePassword(oldPass, newPass)
                 } else {
-                    Toast.makeText(this, "Semua field harus diisi", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "Semua kolom harus diisi", Toast.LENGTH_SHORT).show()
                 }
             }
             .setNegativeButton("Batal", null)
@@ -138,13 +138,15 @@ class EditProfileActivity : AppCompatActivity() {
                 val response = RetrofitClient.instance.changePassword("Bearer $token", request)
 
                 if (response.isSuccessful) {
-                    Toast.makeText(this@EditProfileActivity, "Password berhasil diganti", Toast.LENGTH_SHORT).show()
+                    MaterialAlertDialogBuilder(this@EditProfileActivity)
+                        .setTitle("Berhasil")
+                        .setMessage("Password Anda telah diperbarui.")
+                        .setPositiveButton("Selesai", null)
+                        .show()
                 } else {
                     Toast.makeText(this@EditProfileActivity, "Gagal: Password lama salah", Toast.LENGTH_SHORT).show()
                 }
-            } catch (e: Exception) {
-                Toast.makeText(this@EditProfileActivity, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
-            }
+            } catch (e: Exception) { /* handle error */ }
         }
     }
 

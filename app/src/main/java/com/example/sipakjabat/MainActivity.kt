@@ -24,10 +24,10 @@ class MainActivity : AppCompatActivity() {
 
         tokenManager = TokenManager(this)
 
-        // Auto-login check
+        // Pengecekan Auto-login: Langsung ke Dashboard jika token & role sudah ada
         if (tokenManager.getToken() != null && tokenManager.getRole() != null) {
             navigateToDashboard(tokenManager.getRole()!!)
-            return // Important to prevent further execution
+            return
         }
 
         binding.btnLogin.setOnClickListener {
@@ -77,6 +77,7 @@ class MainActivity : AppCompatActivity() {
                 val pureToken = tokenWithBearer.removePrefix("Bearer ")
 
                 if (role != null) {
+                    // Simpan data autentikasi
                     tokenManager.saveAuthData(pureToken, role)
                     navigateToDashboard(role)
                 } else {
@@ -91,8 +92,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun navigateToDashboard(role: String) {
+        // Navigasi Berbasis Peran: VERIFIKATOR vs Pegawai
         val intent = if (role.equals("VERIFIKATOR", ignoreCase = true)) {
-            // Asumsi AdminActivity ada untuk verifikator
             Intent(this, AdminActivity::class.java)
         } else {
             Intent(this, PegawaiActivity::class.java)
@@ -106,6 +107,9 @@ class MainActivity : AppCompatActivity() {
         setLoadingState(false)
     }
 
+    /**
+     * Mengelola feedback visual saat proses login sedang berjalan
+     */
     private fun setLoadingState(isLoading: Boolean) {
         binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
         binding.btnLogin.text = if (isLoading) "" else "MASUK"

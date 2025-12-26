@@ -1,10 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Status Colors -->
-    <color name="status_draft_bg">#FFF3E0</color>
-    <color name="status_submitted_bg">#E3F2FD</color>
-    <color name="status_approved_bg">#E8F5E9</color>
-    <color name="status_rejected_bg">#FFEBEE</color>
-    <color name="status_revisi_bg">#FFF9C4</color>
-    <color name="status_unknown_bg">#F5F5F5</color>
+    <color name="sipakjabat_navy">#014488</color>    <color name="sipakjabat_green">#2E7D32</color>   <color name="sipakjabat_gold">#C5A059</color>    <color name="primary_blue">#014488</color>
+    <color name="primary_green">#2E7D32</color>
+    <color name="primary_gold">#C5A059</color>
+
+    <color name="white">#FFFFFF</color>
+    <color name="text_dark">#1A202C</color>
+    <color name="text_main">#1A202C</color>
+    <color name="text_muted">#718096</color>
+    <color name="sipakjabat_bg_light">#F0F7FF</color>
+    <color name="bg_soft">#F4F7FA</color>
+
+    <color name="status_draft_bg">#94A3B8</color>     <color name="status_submitted_bg">#014488</color> <color name="status_approved_bg">#2E7D32</color>  <color name="status_rejected_bg">#DC2626</color>  <color name="status_revisi_bg">#C5A059</color>    <color name="status_unknown_bg">#CBD5E1</color>   <color name="red_alert">#E53E3E</color>
 </resources>

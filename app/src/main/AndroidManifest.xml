@@ -23,6 +23,8 @@
             android:name=".DokumenActivity"
             android:exported="false" />
 
+        <activity android:name=".ProfileActivity" />
+
         <activity
             android:name=".TambahDokumenActivity"
             android:exported="false" />
