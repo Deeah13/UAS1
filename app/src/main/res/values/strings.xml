@@ -1,0 +1,40 @@
+<resources>
+
+    <!-- App -->
+    <string name="app_name">sipakjabat</string>
+    <string name="action_settings">Settings</string>
+
+    <!-- General -->
+    <string name="lorem_ipsum">Contoh teks deskripsi aplikasi.</string>
+
+    <!-- Tambah Pengajuan -->
+    <string name="title_tambah_pengajuan">Buat Pengajuan Baru</string>
+    <string name="label_jenis_pengajuan">Pilih Jenis Pengajuan</string>
+    <string name="hint_pangkat_tujuan">Pangkat/Golongan Tujuan</string>
+    <string name="hint_jabatan_tujuan">Jabatan Tujuan</string>
+    <string name="btn_simpan_draf">SIMPAN SEBAGAI DRAF</string>
+
+    <!-- Fragment Navigation (WAJIB agar build tidak error) -->
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+    <string name="first_fragment_label">First Fragment</string>
+    <string name="second_fragment_label">Second Fragment</string>
+
+    <!-- Spinner -->
+    <string-array name="jenis_pengajuan_array">
+        <item>REGULER</item>
+        <item>FUNGSIONAL</item>
+        <item>STRUKTURAL</item>
+    </string-array>
+
+    <string-array name="jenis_dokumen_array">
+        <item>SK_PANGKAT</item>
+        <item>SKP</item>
+        <item>SK_JABATAN</item>
+        <item>PAK</item>
+        <item>SK_PELANTIKAN</item>
+        <item>SPMT</item>
+    </string-array>
+
+
+</resources>

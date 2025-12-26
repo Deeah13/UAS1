@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Status Colors -->
+    <color name="status_draft_bg">#FFF3E0</color>
+    <color name="status_submitted_bg">#E3F2FD</color>
+    <color name="status_approved_bg">#E8F5E9</color>
+    <color name="status_rejected_bg">#FFEBEE</color>
+    <color name="status_revisi_bg">#FFF9C4</color>
+    <color name="status_unknown_bg">#F5F5F5</color>
+</resources>
