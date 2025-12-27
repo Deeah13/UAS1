@@ -86,4 +86,43 @@ interface ApiService {
         @Header("Authorization") token: String,
         @Path("id") id: Long
     ): Response<GlobalResponse<String>>
+
+    // --- 4. ENDPOINT KHUSUS ADMIN / VERIFIKATOR ---
+    // Disesuaikan dengan AdminController.java di backend
+
+    @GET("api/admin/pengajuan/all")
+    suspend fun getAllPengajuan(
+        @Header("Authorization") token: String
+    ): Response<GlobalResponse<List<PengajuanResponse>>>
+
+    @GET("api/admin/pengajuan/submitted")
+    suspend fun getSubmittedPengajuan(
+        @Header("Authorization") token: String
+    ): Response<GlobalResponse<List<PengajuanResponse>>>
+
+    @GET("api/admin/pengajuan/summary")
+    suspend fun getAdminSummary(
+        @Header("Authorization") token: String
+    ): Response<GlobalResponse<SummaryResponseDTO>>
+
+    @POST("api/admin/pengajuan/{id}/approve")
+    suspend fun approvePengajuan(
+        @Header("Authorization") token: String,
+        @Path("id") id: Long,
+        @Body request: VerifikasiRequest
+    ): Response<GlobalResponse<PengajuanResponse>>
+
+    @POST("api/admin/pengajuan/{id}/reject")
+    suspend fun rejectPengajuan(
+        @Header("Authorization") token: String,
+        @Path("id") id: Long,
+        @Body request: VerifikasiRequest
+    ): Response<GlobalResponse<PengajuanResponse>>
+
+    @POST("api/admin/pengajuan/{id}/revisi")
+    suspend fun mintaRevisi(
+        @Header("Authorization") token: String,
+        @Path("id") id: Long,
+        @Body request: RevisiRequest
+    ): Response<GlobalResponse<PengajuanResponse>>
 }

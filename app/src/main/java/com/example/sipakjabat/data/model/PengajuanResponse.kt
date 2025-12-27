@@ -9,6 +9,7 @@ data class PengajuanResponse(
     @SerializedName("jabatanTujuan") val jabatanTujuan: String?,
     @SerializedName("status") val status: String,
     @SerializedName("tanggalDibuat") val tanggalDibuat: String,
+    @SerializedName("namaPengaju") val namaPengaju: String? = null,
     @SerializedName("lampiran") val lampiran: List<DokumenResponse> = emptyList(),
     @SerializedName("catatanVerifikator") val catatanVerifikator: String? = null,
     @SerializedName("alasanPenolakan") val alasanPenolakan: String? = null
