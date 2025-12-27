@@ -21,36 +21,28 @@ class TambahDokumenActivity : AppCompatActivity() {
     private lateinit var tokenManager: TokenManager
     private val calendar = Calendar.getInstance()
 
-    // Variabel untuk menyimpan ID user yang sedang login
-    private var userId: Long = -1
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityTambahDokumenBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         tokenManager = TokenManager(this)
-
-        // AMBIL USER_ID DARI INTENT (Pastikan Dashboard mengirim putExtra("USER_ID", id))
-        userId = intent.getLongExtra("USER_ID", -1)
-
-        if (userId == -1L) {
-            Toast.makeText(this, "ID Pengguna tidak ditemukan", Toast.LENGTH_SHORT).show()
-            finish()
-            return
-        }
-
         setupUI()
         setupJenisDokumenSpinner()
     }
 
     private fun setupUI() {
+        // Set toolbar as action bar agar tidak error Unresolved Reference
         setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayShowTitleEnabled(false)
 
         binding.btnBack.setOnClickListener { finish() }
         binding.etTanggal.setOnClickListener { showDatePicker() }
-        binding.btnSimpan.setOnClickListener { simpanDokumen() }
+        binding.btnSimpan.setOnClickListener {
+            if (validateInput()) {
+                simpanDokumen()
+            }
+        }
     }
 
     private fun setupJenisDokumenSpinner() {
@@ -61,58 +53,54 @@ class TambahDokumenActivity : AppCompatActivity() {
     }
 
     private fun showDatePicker() {
-        DatePickerDialog(
-            this,
-            { _, year, month, day ->
-                calendar.set(year, month, day)
-                val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.US)
-                binding.etTanggal.setText(sdf.format(calendar.time))
-            },
-            calendar.get(Calendar.YEAR),
-            calendar.get(Calendar.MONTH),
-            calendar.get(Calendar.DAY_OF_MONTH)
-        ).show()
+        DatePickerDialog(this, { _, year, month, day ->
+            calendar.set(year, month, day)
+            val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.US)
+            binding.etTanggal.setText(sdf.format(calendar.time))
+        }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).apply {
+            datePicker.maxDate = System.currentTimeMillis()
+            show()
+        }
+    }
+
+    private fun validateInput(): Boolean {
+        if (binding.etNomor.text.toString().trim().isEmpty()) {
+            binding.etNomor.error = "Nomor dokumen wajib diisi"
+            return false
+        }
+        if (binding.etTanggal.text.toString().trim().isEmpty()) {
+            binding.etTanggal.error = "Tanggal terbit wajib diisi"
+            return false
+        }
+        return true
     }
 
     private fun simpanDokumen() {
-        val jenis = binding.spinnerJenis.selectedItem.toString()
-        val nomor = binding.etNomor.text.toString().trim()
-        val tanggal = binding.etTanggal.text.toString().trim()
-        val deskripsi = binding.etDeskripsi.text.toString().trim()
-
-        if (nomor.isEmpty() || tanggal.isEmpty()) {
-            Toast.makeText(this, "Nomor dan Tanggal Terbit wajib diisi", Toast.LENGTH_SHORT).show()
-            return
-        }
-
-        // FIX: Tambahkan userId dan jangan kirim null pada deskripsi agar tidak Mismatch
         val request = CreateDokumenRequest(
-            userId = userId,               // Menyelesaikan error 'No value passed for parameter userId'
-            jenisDokumen = jenis,
-            nomorDokumen = nomor,
-            tanggalTerbit = tanggal,
-            deskripsi = deskripsi          // Menghapus .ifEmpty { null } agar tetap String (bukan String?)
+            userId = null,
+            jenisDokumen = binding.spinnerJenis.selectedItem.toString(),
+            nomorDokumen = binding.etNomor.text.toString().trim(),
+            tanggalTerbit = binding.etTanggal.text.toString().trim(),
+            deskripsi = binding.etDeskripsi.text.toString().trim()
         )
 
         setLoadingState(true)
-
         lifecycleScope.launch {
             try {
                 val token = tokenManager.getToken()
                 if (token != null) {
-                    // Endpoint untuk Pegawai: POST api/pegawai/dokumen
                     val response = RetrofitClient.instance.createDocument("Bearer $token", request)
-
                     if (response.isSuccessful) {
                         Toast.makeText(this@TambahDokumenActivity, "Dokumen berhasil disimpan", Toast.LENGTH_SHORT).show()
                         setResult(RESULT_OK)
                         finish()
                     } else {
-                        Toast.makeText(this@TambahDokumenActivity, "Gagal menyimpan dokumen", Toast.LENGTH_SHORT).show()
+                        val errorMsg = response.errorBody()?.string() ?: "Gagal menyimpan"
+                        Toast.makeText(this@TambahDokumenActivity, errorMsg, Toast.LENGTH_LONG).show()
                     }
                 }
             } catch (e: Exception) {
-                Toast.makeText(this@TambahDokumenActivity, "Terjadi kesalahan: ${e.message}", Toast.LENGTH_LONG).show()
+                Toast.makeText(this@TambahDokumenActivity, "Terjadi kesalahan koneksi", Toast.LENGTH_LONG).show()
             } finally {
                 setLoadingState(false)
             }
@@ -122,6 +110,6 @@ class TambahDokumenActivity : AppCompatActivity() {
     private fun setLoadingState(isLoading: Boolean) {
         binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
         binding.btnSimpan.isEnabled = !isLoading
-        binding.btnSimpan.text = if (isLoading) "Menyimpan..." else "SIMPAN DOKUMEN"
+        binding.btnSimpan.text = if (isLoading) "Proses..." else "SIMPAN DOKUMEN"
     }
 }

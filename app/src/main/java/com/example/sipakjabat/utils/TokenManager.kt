@@ -8,10 +8,12 @@ class TokenManager(context: Context) {
     private val prefs: SharedPreferences =
         context.getSharedPreferences("AUTH_PREF", Context.MODE_PRIVATE)
 
-    fun saveAuthData(token: String, role: String) {
+    // Perbaikan: Gunakan Long untuk parameter userId
+    fun saveAuthData(token: String, role: String, userId: Long) {
         prefs.edit()
             .putString("TOKEN", token)
             .putString("ROLE", role)
+            .putLong("USER_ID", userId) // Menggunakan putLong untuk menyimpan Long
             .apply()
     }
 
@@ -21,6 +23,11 @@ class TokenManager(context: Context) {
 
     fun getRole(): String? {
         return prefs.getString("ROLE", null)
+    }
+
+    // Perbaikan: Gunakan getLong dan kembalikan tipe Long
+    fun getUserId(): Long {
+        return prefs.getLong("USER_ID", -1L) // Menggunakan getLong untuk mengambil Long
     }
 
     fun clear() {

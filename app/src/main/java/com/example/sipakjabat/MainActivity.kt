@@ -74,14 +74,15 @@ class MainActivity : AppCompatActivity() {
             if (profileResponse.isSuccessful) {
                 val profile = profileResponse.body()?.data
                 val role = profile?.role
+                val userId = profile?.id // Ambil ID dari ProfileResponse (tipe Long)
                 val pureToken = tokenWithBearer.removePrefix("Bearer ")
 
-                if (role != null) {
-                    // Menggunakan fungsi saveAuthData dari TokenManager.kt
-                    tokenManager.saveAuthData(pureToken, role)
+                if (role != null && userId != null) {
+                    // SEKARANG KIRIM 3 PARAMETER: token, role, dan userId
+                    tokenManager.saveAuthData(pureToken, role, userId)
                     navigateToDashboard(role)
                 } else {
-                    handleLoginError("Gagal identifikasi Role.")
+                    handleLoginError("Gagal identifikasi profil user.")
                 }
             } else {
                 handleLoginError("Gagal memuat profil.")

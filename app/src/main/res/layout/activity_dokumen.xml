@@ -3,16 +3,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F0F7FF">
-
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="180dp"
-        android:background="#014488"
-        android:gravity="top"
-        app:title=""
-        app:layout_constraintTop_toTopOf="parent" />
+    android:background="#FFFFFF"> <androidx.appcompat.widget.Toolbar
+    android:id="@+id/toolbar"
+    android:layout_width="match_parent"
+    android:layout_height="180dp"
+    android:background="#014488"
+    android:gravity="top"
+    app:title=""
+    app:layout_constraintTop_toTopOf="parent" />
 
     <ImageButton
         android:id="@+id/btnBack"
@@ -45,6 +43,7 @@
         android:layout_marginTop="24dp"
         app:cardCornerRadius="32dp"
         app:cardElevation="0dp"
+        app:cardBackgroundColor="#FFFFFF"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tvTitle">
 
