@@ -1,16 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F0F7FF">
+    android:background="#F0F7FF"
+    android:clipChildren="false"
+    android:clipToPadding="false">
 
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar"
+    <View
+        android:id="@+id/headerBackground"
         android:layout_width="match_parent"
-        android:layout_height="180dp"
-        android:background="#014488"
-        android:gravity="top"
+        android:layout_height="160dp"
+        android:background="@drawable/bg_header_modern"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageButton
@@ -21,9 +23,9 @@
         android:layout_marginTop="32dp"
         android:background="?attr/selectableItemBackgroundBorderless"
         android:src="@drawable/ic_arrow_back"
-        app:tint="#FFFFFF"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:tint="#FFFFFF" />
 
     <TextView
         android:id="@+id/tvTitle"
@@ -41,8 +43,9 @@
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginTop="24dp"
-        app:cardCornerRadius="32dp"
+        android:layout_marginTop="20dp"
+        app:cardBackgroundColor="#FFFFFF"
+        app:cardCornerRadius="35dp"
         app:cardElevation="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tvTitle">
@@ -50,14 +53,14 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:paddingTop="16dp">
+            android:paddingTop="24dp">
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rvPengajuan"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:clipToPadding="false"
-                android:paddingBottom="80dp" />
+                android:paddingBottom="100dp" />
 
             <ProgressBar
                 android:id="@+id/progressBar"
@@ -91,7 +94,8 @@
         android:layout_margin="24dp"
         android:src="@android:drawable/ic_input_add"
         app:backgroundTint="#C5A059"
-        app:tint="@android:color/white"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:tint="@android:color/white" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

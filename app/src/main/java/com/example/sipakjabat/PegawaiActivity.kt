@@ -3,7 +3,6 @@ package com.example.sipakjabat
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.example.sipakjabat.data.api.RetrofitClient
@@ -31,44 +30,22 @@ class PegawaiActivity : AppCompatActivity() {
         }
 
         setupUI()
-        // Memuat data saat pertama kali aplikasi dibuka
         loadDashboardData()
     }
 
-    // Memastikan data diperbarui setiap kali pengguna kembali ke Dashboard
     override fun onResume() {
         super.onResume()
         loadDashboardData()
     }
 
     private fun setupUI() {
-        // Klik logo untuk buka/tutup menu
-        binding.mainLogoTrigger.setOnClickListener {
-            toggleMenu()
-        }
-
-        // Navigasi satelit
-        binding.btnMenuProfil.setOnClickListener {
-            startActivity(Intent(this, ProfileActivity::class.java))
-        }
-
-        binding.btnMenuPengajuan.setOnClickListener {
-            startActivity(Intent(this, RiwayatActivity::class.java))
-        }
-
-        binding.btnMenuDokumen.setOnClickListener {
-            startActivity(Intent(this, DokumenActivity::class.java))
-        }
-
-        binding.btnLogout.setOnClickListener {
-            showLogoutConfirmationDialog()
-        }
+        binding.mainLogoTrigger.setOnClickListener { toggleMenu() }
+        binding.btnMenuProfil.setOnClickListener { startActivity(Intent(this, ProfileActivity::class.java)) }
+        binding.btnMenuPengajuan.setOnClickListener { startActivity(Intent(this, RiwayatActivity::class.java)) }
+        binding.btnMenuDokumen.setOnClickListener { startActivity(Intent(this, DokumenActivity::class.java)) }
+        binding.btnLogout.setOnClickListener { showLogoutConfirmationDialog() }
     }
 
-    /**
-     * Mengambil data pengajuan dari backend dan menghitung jumlah berdasarkan status.
-     * Menggunakan pemetaan status sesuai Enum di Backend (StatusPengajuan.java).
-     */
     private fun loadDashboardData() {
         lifecycleScope.launch {
             try {
@@ -78,30 +55,22 @@ class PegawaiActivity : AppCompatActivity() {
                 if (response.isSuccessful) {
                     val dataList = response.body()?.data ?: emptyList()
 
-                    // Menghitung status dengan menyamakan case (uppercase) agar akurat
-                    // 1. PROSES: Gabungan dari DRAFT, SUBMITTED (menunggu), dan PERLU_REVISI
+                    // PERBAIKAN LOGIKA: Statistik "Proses" hanya Submitted dan Perlu Revisi
                     val countProses = dataList.count {
                         val s = it.status.uppercase()
-                        s == "SUBMITTED" || s == "PERLU_REVISI" || s == "DRAFT"
+                        s == "SUBMITTED" || s == "PERLU_REVISI"
                     }
 
-                    // 2. DITERIMA: Sesuai status APPROVED di backend
-                    val countDiterima = dataList.count {
-                        it.status.uppercase() == "APPROVED"
-                    }
+                    val countDiterima = dataList.count { it.status.uppercase() == "APPROVED" }
+                    val countDitolak = dataList.count { it.status.uppercase() == "REJECTED" }
 
-                    // 3. DITOLAK: Sesuai status REJECTED di backend
-                    val countDitolak = dataList.count {
-                        it.status.uppercase() == "REJECTED"
-                    }
-
-                    // Memperbarui teks pada kartu ringkasan di UI
+                    // Perbarui UI Statistik Sebaris
                     binding.tvCountPending.text = countProses.toString()
                     binding.tvCountDiterima.text = countDiterima.toString()
                     binding.tvCountDitolak.text = countDitolak.toString()
                 }
             } catch (e: Exception) {
-                // Jika terjadi kesalahan koneksi, angka tetap pada nilai default (0)
+                // Biarkan angka tetap 0 jika error koneksi
             }
         }
     }
@@ -131,9 +100,7 @@ class PegawaiActivity : AppCompatActivity() {
                 .scaleY(targetScale)
                 .setDuration(400L + (index * 100L))
                 .setInterpolator(android.view.animation.OvershootInterpolator(1.3f))
-                .withEndAction {
-                    if (!isMenuOpen) view.visibility = View.INVISIBLE
-                }
+                .withEndAction { if (!isMenuOpen) view.visibility = View.INVISIBLE }
                 .start()
         }
     }
@@ -141,9 +108,9 @@ class PegawaiActivity : AppCompatActivity() {
     private fun showLogoutConfirmationDialog() {
         MaterialAlertDialogBuilder(this)
             .setTitle("Konfirmasi Keluar")
-            .setMessage("Apakah Anda yakin ingin keluar dari aplikasi?")
-            .setPositiveButton("Ya, Keluar") { _, _ ->
-                tokenManager.clear()
+            .setMessage("Apakah Anda yakin ingin keluar?")
+            .setPositiveButton("Ya") { _, _ ->
+                tokenManager.clear() // PERBAIKAN: Menggunakan clear() sesuai TokenManager.kt
                 redirectToLogin()
             }
             .setNegativeButton("Batal", null)

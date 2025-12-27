@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#F0F7FF">
@@ -8,156 +9,214 @@
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="220dp"
+        android:layout_height="100dp"
         android:background="#014488"
-        android:gravity="top"
-        app:title=""
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent">
 
-    <ImageButton
-        android:id="@+id/btnBack"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="32dp"
-        android:background="?attr/selectableItemBackgroundBorderless"
-        android:src="@drawable/ic_arrow_back"
-        app:tint="#FFFFFF"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/tvProfileTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:fontFamily="@font/poppins_bold"
-        android:text="Edit Profil"
-        android:textColor="#FFFFFF"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="@id/btnBack"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/btnBack" />
+            <ImageButton
+                android:id="@+id/btnBack"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/ic_arrow_back"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:tint="#FFFFFF" />
 
-    <ScrollView
+            <TextView
+                android:id="@+id/tvProfileTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/poppins_bold"
+                android:text="Ubah Profil Saya"
+                android:textColor="#FFFFFF"
+                android:textSize="20sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.appcompat.widget.Toolbar>
+
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tvProfileTitle">
+        app:layout_constraintTop_toBottomOf="@id/toolbar">
 
-        <com.google.android.material.card.MaterialCardView
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="24dp"
-            app:cardCornerRadius="24dp"
-            app:cardElevation="12dp"
-            app:strokeColor="#C5A059"
-            app:strokeWidth="2dp">
+            android:orientation="vertical"
+            android:padding="24dp">
 
-            <LinearLayout
+            <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="24dp">
+                app:cardBackgroundColor="#FFFFFF"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="6dp"
+                app:strokeColor="#014488"
+                app:strokeWidth="1dp">
 
-                <TextView
-                    android:id="@+id/tvProfileName"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/poppins_bold"
-                    android:text="Nama Pegawai"
-                    android:textColor="#014488"
-                    android:textSize="20sp" />
-
-                <TextView
-                    android:id="@+id/tvProfileNip"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="NIP: -"
-                    android:textColor="#718096" />
-
-                <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#E2E8F0" android:layout_marginVertical="16dp" />
-
-                <com.google.android.material.textfield.TextInputLayout
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="12dp"
-                    android:hint="NIP">
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/etNip"
+                    android:orientation="vertical"
+                    android:padding="20dp">
+
+                    <TextView
+                        android:id="@+id/tvProfileName"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:enabled="false" />
-                </com.google.android.material.textfield.TextInputLayout>
+                        android:fontFamily="@font/poppins_bold"
+                        android:gravity="center"
+                        android:textColor="#014488"
+                        android:textSize="18sp"
+                        tools:text="Nama Pengguna" />
 
-                <com.google.android.material.textfield.TextInputLayout
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="12dp"
-                    android:hint="Pangkat/Golongan">
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/etPangkat"
+                    <TextView
+                        android:id="@+id/tvProfileNip"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:enabled="false" />
-                </com.google.android.material.textfield.TextInputLayout>
+                        android:fontFamily="@font/poppins_regular"
+                        android:gravity="center"
+                        android:textColor="#718096"
+                        android:textSize="13sp"
+                        tools:text="NIP: 198706122010121001" />
 
-                <com.google.android.material.textfield.TextInputLayout
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="24dp"
-                    android:hint="Jabatan">
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/etJabatan"
+                    <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#E2E8F0" android:layout_marginVertical="16dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/poppins_bold"
+                        android:text="DATA PEGAWAI (READ-ONLY)"
+                        android:textColor="#718096"
+                        android:textSize="10sp"
+                        android:layout_marginBottom="12dp" />
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:enabled="false" />
-                </com.google.android.material.textfield.TextInputLayout>
+                        android:layout_marginBottom="12dp"
+                        android:hint="NIP"
+                        app:startIconDrawable="@drawable/baseline_assignment_24"
+                        app:boxCornerRadiusTopStart="12dp" app:boxCornerRadiusBottomEnd="12dp">
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/etNip"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:enabled="false"
+                            android:fontFamily="@font/poppins_regular"
+                            android:textColor="#718096" />
+                    </com.google.android.material.textfield.TextInputLayout>
 
-                <com.google.android.material.textfield.TextInputLayout
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="12dp"
-                    android:hint="Nama Lengkap">
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/etNamaLengkap"
+                    <com.google.android.material.textfield.TextInputLayout
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
-                </com.google.android.material.textfield.TextInputLayout>
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="12dp"
+                        android:hint="Pangkat/Golongan"
+                        app:startIconDrawable="@drawable/baseline_assignment_24"
+                        app:boxCornerRadiusTopStart="12dp" app:boxCornerRadiusBottomEnd="12dp">
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/etPangkat"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:enabled="false"
+                            android:fontFamily="@font/poppins_regular"
+                            android:textColor="#718096" />
+                    </com.google.android.material.textfield.TextInputLayout>
 
-                <com.google.android.material.textfield.TextInputLayout
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="24dp"
-                    android:hint="Email">
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/etEmail"
+                    <com.google.android.material.textfield.TextInputLayout
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
-                </com.google.android.material.textfield.TextInputLayout>
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="16dp"
+                        android:hint="Jabatan"
+                        app:startIconDrawable="@drawable/baseline_assignment_24"
+                        app:boxCornerRadiusTopStart="12dp" app:boxCornerRadiusBottomEnd="12dp">
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/etJabatan"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:enabled="false"
+                            android:fontFamily="@font/poppins_regular"
+                            android:textColor="#718096" />
+                    </com.google.android.material.textfield.TextInputLayout>
 
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btnSimpan"
-                    android:layout_width="match_parent"
-                    android:layout_height="56dp"
-                    android:backgroundTint="#014488"
-                    android:text="SIMPAN PROFIL"
-                    app:cornerRadius="12dp" />
+                    <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#E2E8F0" android:layout_marginBottom="16dp" />
 
-                <ProgressBar
-                    android:id="@+id/progressBar"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:visibility="gone" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/poppins_bold"
+                        android:text="INFORMASI YANG DAPAT DIUBAH"
+                        android:textColor="#014488"
+                        android:textSize="10sp"
+                        android:layout_marginBottom="12dp" />
 
-            </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
-    </ScrollView>
+                    <com.google.android.material.textfield.TextInputLayout
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="12dp"
+                        android:hint="Nama Lengkap"
+                        app:startIconDrawable="@drawable/baseline_assignment_24"
+                        app:boxCornerRadiusTopStart="12dp" app:boxCornerRadiusBottomEnd="12dp">
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/etNamaLengkap"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/poppins_regular" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="20dp"
+                        android:hint="Email"
+                        app:startIconDrawable="@drawable/baseline_assignment_24"
+                        app:boxCornerRadiusTopStart="12dp" app:boxCornerRadiusBottomEnd="12dp">
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/etEmail"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/poppins_regular"
+                            android:inputType="textEmailAddress" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnSimpan"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_marginTop="24dp"
+                android:backgroundTint="#014488"
+                android:fontFamily="@font/poppins_bold"
+                android:text="SIMPAN PERUBAHAN"
+                app:cornerRadius="16dp" />
+
+            <ProgressBar
+                android:id="@+id/progressBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="16dp"
+                android:visibility="gone" />
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,6 +1,5 @@
 package com.example.sipakjabat
 
-import android.content.DialogInterface
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
@@ -55,10 +54,12 @@ class DetailPengajuanActivity : AppCompatActivity() {
     }
 
     private fun setupUI() {
-        setSupportActionBar(binding.toolbar)
-        supportActionBar?.setDisplayShowTitleEnabled(false)
+        // PERBAIKAN UTAMA: Menghapus setSupportActionBar(binding.toolbar)
+        // karena ID 'toolbar' sudah tidak ada di XML (diganti headerView)
 
-        binding.btnBack.setOnClickListener { finish() }
+        binding.btnBack.setOnClickListener {
+            finish()
+        }
 
         binding.btnKelolaDokumen.setOnClickListener { showDocumentSelectionDialog() }
         binding.btnSubmit.setOnClickListener { showSubmitConfirmationDialog() }
@@ -80,6 +81,7 @@ class DetailPengajuanActivity : AppCompatActivity() {
     }
 
     private fun updateUI(state: DetailPengajuanUiState) {
+        // Reference ke contentLayout (ScrollView utama)
         binding.progressBar.visibility = if (state.isLoading) View.VISIBLE else View.GONE
         binding.contentLayout.visibility = if (state.isLoading) View.GONE else View.VISIBLE
 
@@ -90,48 +92,42 @@ class DetailPengajuanActivity : AppCompatActivity() {
 
         state.successMessage?.let {
             Toast.makeText(this, it, Toast.LENGTH_SHORT).show()
-            if (it == "Draf pengajuan berhasil dihapus") finish()
+            if (it.contains("dihapus", true)) finish()
             viewModel.clearMessages()
         }
 
         state.pengajuan?.let { pengajuan ->
-            // 1. Badge Status
             binding.tvStatus.text = state.statusText
             binding.cardStatus.setCardBackgroundColor(ContextCompat.getColor(this, state.statusColorRes))
 
-            // 2. Identitas Pegawai
             binding.tvNamaDetail.text = "Nama: ${pengajuan.user?.namaLengkap ?: "-"}"
             binding.tvNipDetail.text = "NIP: ${pengajuan.user?.nip ?: "-"}"
             binding.tvEmailDetail.text = "Email: ${pengajuan.user?.email ?: "-"}"
 
-            // 3. Rincian Pengajuan
             binding.tvJenisDetail.text = pengajuan.jenisPengajuan
             binding.tvPangkatSaatIni.text = pengajuan.pangkatSaatIni ?: "-"
             binding.tvJabatanSaatIni.text = pengajuan.jabatanSaatIni ?: "-"
             binding.tvPangkatTujuan.text = pengajuan.pangkatTujuan ?: "-"
             binding.tvJabatanTujuan.text = pengajuan.jabatanTujuan ?: "-"
 
-            // 4. Lampiran Dokumen
             lampiranAdapter.submitList(pengajuan.lampiran)
             binding.tvLampiranEmpty.visibility = if (pengajuan.lampiran.isEmpty()) View.VISIBLE else View.GONE
 
-            // 5. Syarat Dokumen
+            // Reference ke cardSyarat dan tvSyaratDokumen
             binding.tvSyaratDokumen.text = when (pengajuan.jenisPengajuan) {
-                "REGULER" -> "Wajib: SK Pangkat dan SKP."
-                "FUNGSIONAL" -> "Wajib: SK Pangkat, SK Jabatan, SKP, dan PAK."
-                "STRUKTURAL" -> "Wajib: SK Pangkat, SK Jabatan, SK Pelantikan, SPMT, dan SKP."
-                else -> "Lampirkan dokumen pendukung."
+                "REGULER" -> "Wajib melampirkan: SK Pangkat Terakhir dan SKP."
+                "FUNGSIONAL" -> "Wajib melampirkan: SK Pangkat, SK Jabatan, SKP, dan PAK."
+                else -> "Harap lampirkan dokumen pendukung sesuai aturan."
             }
             binding.cardSyarat.visibility = if (state.canAttachDocuments) View.VISIBLE else View.GONE
 
-            // 6. Catatan & Penolakan
             binding.cardCatatan.visibility = if (!pengajuan.catatanVerifikator.isNullOrBlank()) View.VISIBLE else View.GONE
             binding.tvCatatanVerifikator.text = pengajuan.catatanVerifikator
 
+            // Reference ke cardPenolakan dan tvAlasanPenolakan
             binding.cardPenolakan.visibility = if (!pengajuan.alasanPenolakan.isNullOrBlank()) View.VISIBLE else View.GONE
             binding.tvAlasanPenolakan.text = pengajuan.alasanPenolakan
 
-            // 7. Visibilitas Tombol
             binding.btnKelolaDokumen.visibility = if (state.canAttachDocuments) View.VISIBLE else View.GONE
             binding.btnSubmit.visibility = if (state.canSubmit) View.VISIBLE else View.GONE
             binding.btnDelete.visibility = if (state.canDelete) View.VISIBLE else View.GONE
@@ -164,7 +160,7 @@ class DetailPengajuanActivity : AppCompatActivity() {
     private fun showSubmitConfirmationDialog() {
         MaterialAlertDialogBuilder(this)
             .setTitle("Submit Pengajuan")
-            .setMessage("Kirim sekarang? Data tidak bisa diubah setelah dikirim.")
+            .setMessage("Data tidak bisa diubah setelah dikirim. Kirim sekarang?")
             .setPositiveButton("Ya, Kirim") { _, _ -> viewModel.submitPengajuan(pengajuanId) }
             .setNegativeButton("Batal", null)
             .show()
@@ -173,7 +169,7 @@ class DetailPengajuanActivity : AppCompatActivity() {
     private fun showDeleteConfirmationDialog() {
         MaterialAlertDialogBuilder(this)
             .setTitle("Hapus Draf")
-            .setMessage("Yakin ingin menghapus draf ini?")
+            .setMessage("Apakah Anda yakin ingin menghapus draf ini?")
             .setPositiveButton("Ya, Hapus") { _, _ -> viewModel.deletePengajuan(pengajuanId) }
             .setNegativeButton("Batal", null)
             .show()

@@ -29,34 +29,54 @@ class AdminEditUserActivity : AppCompatActivity() {
         tokenManager = TokenManager(this)
         userId = intent.getLongExtra("USER_ID", -1)
 
-        // Isi data awal
+        if (userId == -1L) {
+            Toast.makeText(this, "ID Pengguna tidak valid", Toast.LENGTH_SHORT).show()
+            finish()
+            return
+        }
+
+        // 1. Populasi Data Awal dari Intent (Termasuk NIP untuk field Read-Only)
+        populateInitialData()
+
+        // 2. Inisialisasi Listener Tombol dan Input
+        setupListeners()
+    }
+
+    private fun populateInitialData() {
+        // Mengambil NIP yang dikirim dari AdminUserDetailActivity
+        val nip = intent.getStringExtra("NIP")
+        binding.etEditNip.setText(nip ?: "-")
+
+        // Mengisi data lainnya ke input field
         binding.etEditNama.setText(intent.getStringExtra("NAMA"))
         binding.etEditEmail.setText(intent.getStringExtra("EMAIL"))
         binding.etEditPangkat.setText(intent.getStringExtra("PANGKAT"))
         binding.etEditJabatan.setText(intent.getStringExtra("JABATAN"))
         binding.etEditTmt.setText(intent.getStringExtra("TMT"))
-
-        setupListeners()
     }
 
     private fun setupListeners() {
+        // Tombol Kembali
         binding.btnBack.setOnClickListener { finish() }
 
-        // TAMPILKAN KALENDER SAAT KLIK TMT
+        // Konfigurasi Input Tanggal (TMT) agar memunculkan kalender
         binding.etEditTmt.setOnClickListener { showDatePicker() }
-        binding.etEditTmt.isFocusable = false // Agar tidak bisa diketik manual
+        binding.etEditTmt.isFocusable = false // Menjaga format agar tetap YYYY-MM-DD
 
+        // Tombol Simpan Perubahan
         binding.btnUpdateUser.setOnClickListener { performUpdate() }
     }
 
     private fun showDatePicker() {
+        val dateSetListener = DatePickerDialog.OnDateSetListener { _, year, month, dayOfMonth ->
+            calendar.set(year, month, dayOfMonth)
+            val format = SimpleDateFormat("yyyy-MM-dd", Locale.US)
+            binding.etEditTmt.setText(format.format(calendar.time))
+        }
+
         DatePickerDialog(
             this,
-            { _, year, month, dayOfMonth ->
-                calendar.set(year, month, dayOfMonth)
-                val format = SimpleDateFormat("yyyy-MM-dd", Locale.US)
-                binding.etEditTmt.setText(format.format(calendar.time))
-            },
+            dateSetListener,
             calendar.get(Calendar.YEAR),
             calendar.get(Calendar.MONTH),
             calendar.get(Calendar.DAY_OF_MONTH)
@@ -64,35 +84,53 @@ class AdminEditUserActivity : AppCompatActivity() {
     }
 
     private fun performUpdate() {
-        val request = UpdateUserByAdminRequest(
-            namaLengkap = binding.etEditNama.text.toString().trim(),
-            email = binding.etEditEmail.text.toString().trim(),
-            pangkatGolongan = binding.etEditPangkat.text.toString().trim(),
-            jabatan = binding.etEditJabatan.text.toString().trim(),
-            tmtPangkatTerakhir = binding.etEditTmt.text.toString().trim()
-        )
+        // 1. Ambil data dari Input Field
+        val nama = binding.etEditNama.text.toString().trim()
+        val email = binding.etEditEmail.text.toString().trim()
+        val pangkat = binding.etEditPangkat.text.toString().trim()
+        val jabatan = binding.etEditJabatan.text.toString().trim()
+        val tmt = binding.etEditTmt.text.toString().trim()
 
-        if (request.namaLengkap.isEmpty() || request.email.isEmpty()) {
+        // 2. Validasi Sederhana
+        if (nama.isEmpty() || email.isEmpty()) {
             Toast.makeText(this, "Nama dan Email wajib diisi", Toast.LENGTH_SHORT).show()
             return
         }
 
-        val token = tokenManager.getToken() ?: return
+        val request = UpdateUserByAdminRequest(
+            namaLengkap = nama,
+            email = email,
+            pangkatGolongan = pangkat,
+            jabatan = jabatan,
+            tmtPangkatTerakhir = tmt // Dikirim dalam format string YYYY-MM-DD
+        )
+
+        val token = tokenManager.getToken()
+        if (token == null) {
+            Toast.makeText(this, "Sesi habis, silakan login kembali", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        // 3. Proses API dengan State Loading
         binding.progressBar.visibility = View.VISIBLE
+        binding.btnUpdateUser.isEnabled = false
 
         lifecycleScope.launch {
             try {
+                // Memanggil endpoint PUT /api/admin/users/{id}
                 val response = RetrofitClient.instance.updateUser("Bearer $token", userId, request)
                 if (response.isSuccessful) {
                     Toast.makeText(this@AdminEditUserActivity, "Data Pegawai Berhasil Diperbarui", Toast.LENGTH_SHORT).show()
-                    finish()
+                    finish() // Kembali ke Profil Pegawai
                 } else {
-                    Toast.makeText(this@AdminEditUserActivity, "Gagal memperbarui data", Toast.LENGTH_SHORT).show()
+                    val msg = response.errorBody()?.string() ?: "Gagal memperbarui data"
+                    Toast.makeText(this@AdminEditUserActivity, msg, Toast.LENGTH_SHORT).show()
                 }
             } catch (e: Exception) {
-                Toast.makeText(this@AdminEditUserActivity, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@AdminEditUserActivity, "Kesalahan: ${e.message}", Toast.LENGTH_SHORT).show()
             } finally {
                 binding.progressBar.visibility = View.GONE
+                binding.btnUpdateUser.isEnabled = true
             }
         }
     }

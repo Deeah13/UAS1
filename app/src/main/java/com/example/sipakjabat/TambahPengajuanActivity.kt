@@ -29,8 +29,7 @@ class TambahPengajuanActivity : AppCompatActivity() {
     }
 
     private fun setupUI() {
-        setSupportActionBar(binding.toolbar)
-        supportActionBar?.setDisplayShowTitleEnabled(false)
+        // PERBAIKAN: Menghapus setSupportActionBar(binding.toolbar)
         binding.btnBack.setOnClickListener { finish() }
         binding.btnSimpan.setOnClickListener { simpanPengajuan() }
     }
@@ -53,7 +52,7 @@ class TambahPengajuanActivity : AppCompatActivity() {
         }
 
         val request = PengajuanCreateRequestDTO(jenis, pangkat, jabatan)
-        binding.progressBar.visibility = View.VISIBLE // Memanggil ID progressBar dari binding
+        binding.progressBar.visibility = View.VISIBLE
         binding.btnSimpan.isEnabled = false
 
         lifecycleScope.launch {

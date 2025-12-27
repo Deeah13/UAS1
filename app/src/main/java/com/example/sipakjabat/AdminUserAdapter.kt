@@ -1,5 +1,6 @@
 package com.example.sipakjabat
 
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -13,19 +14,28 @@ class AdminUserAdapter(private val onClick: (UserResponse) -> Unit) :
 
     class UserViewHolder(private val binding: ItemUserBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(user: UserResponse, onClick: (UserResponse) -> Unit) {
-            binding.tvNamaUser.text = user.namaLengkap
-            binding.tvNipUser.text = "NIP: ${user.nip}"
-            binding.tvRoleUser.text = user.role
+            // 1. Set Data Tekstual
+            binding.tvNamaUser.text = user.namaLengkap ?: "Tanpa Nama"
+            binding.tvNipUser.text = "NIP: ${user.nip ?: "-"}"
 
-            // Logika warna role sesuai sistem backend
-            if (user.role == "VERIFIKATOR") {
-                binding.tvRoleUser.setTextColor(0xFF014488.toInt())
-                binding.tvRoleUser.setBackgroundColor(0xFFEBF8FF.toInt())
-            } else {
-                binding.tvRoleUser.setTextColor(0xFF4A5568.toInt())
-                binding.tvRoleUser.setBackgroundColor(0xFFEDF2F7.toInt())
+            // 2. Logika Warna Role (Satu Kotak Berwarna - Pastel Style)
+            // Triple: (Latar Kotak Pastel, Warna Aksen/Badge/Stroke, Label Teks)
+            val (cardBg, accentColor, roleLabel) = when (user.role) {
+                "VERIFIKATOR" -> Triple("#FFF9E6", "#C5A059", "VERIFIKATOR") // Gold Style
+                "ADMIN" -> Triple("#E8F5E9", "#2E7D32", "ADMINISTRATOR")     // Green Style
+                else -> Triple("#E6F2FF", "#014488", "PEGAWAI")             // Blue Style
             }
 
+            // Terapkan Warna ke Seluruh Kotak (CardView)
+            binding.rootCard.setCardBackgroundColor(Color.parseColor(cardBg))
+            binding.rootCard.strokeColor = Color.parseColor(accentColor)
+
+            // Terapkan ke Badge Role
+            binding.tvRoleUser.text = roleLabel
+            binding.tvRoleUser.setBackgroundColor(Color.parseColor(accentColor))
+            binding.tvRoleUser.setTextColor(Color.WHITE)
+
+            // 3. Listener Klik
             binding.root.setOnClickListener { onClick(user) }
         }
     }
@@ -40,7 +50,10 @@ class AdminUserAdapter(private val onClick: (UserResponse) -> Unit) :
     }
 
     companion object DiffCallback : DiffUtil.ItemCallback<UserResponse>() {
-        override fun areItemsTheSame(oldItem: UserResponse, newItem: UserResponse) = oldItem.id == newItem.id
-        override fun areContentsTheSame(oldItem: UserResponse, newItem: UserResponse) = oldItem == newItem
+        override fun areItemsTheSame(oldItem: UserResponse, newItem: UserResponse) =
+            oldItem.id == newItem.id
+
+        override fun areContentsTheSame(oldItem: UserResponse, newItem: UserResponse) =
+            oldItem == newItem
     }
 }

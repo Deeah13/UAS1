@@ -1,121 +1,231 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F0F7FF">
+    android:background="#F0F7FF"
+    android:clipChildren="false"
+    android:clipToPadding="false">
 
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/header"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
+        android:layout_height="160dp"
         android:background="#014488"
         app:layout_constraintTop_toTopOf="parent">
+
         <ImageButton
             android:id="@+id/btnBack"
             android:layout_width="48dp"
             android:layout_height="48dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="30dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:src="@drawable/ic_arrow_back"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
             app:tint="#FFFFFF" />
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
             android:fontFamily="@font/poppins_bold"
             android:text="Profil Pegawai"
             android:textColor="#FFFFFF"
-            android:textSize="18sp" />
-    </androidx.appcompat.widget.Toolbar>
+            android:textSize="20sp"
+            app:layout_constraintBottom_toBottomOf="@id/btnBack"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/btnBack" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <ScrollView
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:clipChildren="false"
+        android:clipToPadding="false"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/toolbar">
+        app:layout_constraintTop_toBottomOf="@id/header">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:clipChildren="false"
+            android:clipToPadding="false"
             android:orientation="vertical"
-            android:padding="20dp">
+            android:paddingHorizontal="24dp"
+            android:paddingBottom="40dp">
 
             <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardProfile"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:cardCornerRadius="16dp"
-                app:cardElevation="4dp">
+                android:layout_marginTop="-60dp"
+                android:layout_marginBottom="24dp"
+                app:cardBackgroundColor="#FFFFFF"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="10dp"
+                app:strokeColor="#014488"
+                app:strokeWidth="1dp">
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:padding="16dp">
-                    <TextView android:id="@+id/tvDetailNama" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textSize="18sp" android:fontFamily="@font/poppins_bold" android:text="Nama Lengkap" />
-                    <TextView android:id="@+id/tvDetailNip" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="NIP: -" />
-                    <TextView android:id="@+id/tvDetailEmail" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Email: -" />
-                    <TextView android:id="@+id/tvDetailRole" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:background="#EBF8FF" android:paddingHorizontal="8dp" android:paddingVertical="4dp" android:text="ROLE: -" android:textColor="#014488" android:textSize="12sp" android:fontFamily="@font/poppins_bold" />
+                    android:padding="24dp">
+
+                    <TextView
+                        android:id="@+id/tvDetailNama"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/poppins_bold"
+                        android:gravity="center"
+                        android:textColor="#2D3748"
+                        android:textSize="18sp"
+                        tools:text="Nama Lengkap Pegawai" />
+
+                    <TextView
+                        android:id="@+id/tvDetailNip"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/poppins_regular"
+                        android:gravity="center"
+                        android:textColor="#718096"
+                        android:textSize="13sp"
+                        tools:text="NIP: 198706122010121001" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="#E2E8F0"
+                        android:layout_marginVertical="16dp"/>
+
+                    <TextView
+                        android:id="@+id/tvDetailPangkat"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/poppins_bold"
+                        android:textColor="#2D3748"
+                        android:textSize="13sp"
+                        tools:text="Pangkat: Penata Muda (III/b)" />
+
+                    <TextView
+                        android:id="@+id/tvDetailJabatan"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="6dp"
+                        android:fontFamily="@font/poppins_regular"
+                        android:textColor="#4A5568"
+                        android:textSize="13sp"
+                        tools:text="Jabatan: Statistisi Ahli Pertama" />
+
+                    <TextView
+                        android:id="@+id/tvDetailTmt"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="6dp"
+                        android:fontFamily="@font/poppins_regular"
+                        android:textColor="#718096"
+                        android:textSize="12sp"
+                        tools:text="TMT: 2020-01-01" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="#E2E8F0"
+                        android:layout_marginVertical="16dp"/>
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        app:cardCornerRadius="8dp"
+                        app:cardElevation="0dp">
+                        <TextView
+                            android:id="@+id/tvDetailRole"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="#014488"
+                            android:fontFamily="@font/poppins_bold"
+                            android:paddingHorizontal="16dp"
+                            android:paddingVertical="8dp"
+                            android:textColor="#FFFFFF"
+                            android:textSize="11sp"
+                            tools:text="PEGAWAI" />
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <TextView
+                        android:id="@+id/tvDetailEmail"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:fontFamily="@font/poppins_regular"
+                        android:gravity="center"
+                        android:textColor="#4A5568"
+                        android:textSize="12sp"
+                        tools:text="Email: pegawaibps@bps.go.id" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
-            <com.google.android.material.card.MaterialCardView
-                android:layout_width="match_parent"
+            <TextView
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                app:cardCornerRadius="16dp"
-                app:cardElevation="4dp">
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="16dp">
-                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Informasi Jabatan" android:fontFamily="@font/poppins_bold" android:textColor="#014488" />
-                    <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#E2E8F0" android:layout_marginVertical="8dp"/>
-                    <TextView android:id="@+id/tvDetailPangkat" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Pangkat/Gol: -" />
-                    <TextView android:id="@+id/tvDetailJabatan" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="4dp" android:text="Jabatan: -" />
-                    <TextView android:id="@+id/tvDetailTmt" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="4dp" android:text="TMT Pangkat: -" />
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
+                android:fontFamily="@font/poppins_bold"
+                android:letterSpacing="0.1"
+                android:text="TINDAKAN ADMIN"
+                android:textColor="#014488"
+                android:textSize="12sp"
+                android:layout_marginBottom="12dp" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnEditUser"
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
-                android:layout_marginTop="24dp"
-                android:text="EDIT DATA PEGAWAI"
+                android:layout_marginBottom="12dp"
                 android:backgroundTint="#014488"
-                app:cornerRadius="12dp" />
+                android:fontFamily="@font/poppins_bold"
+                android:text="Edit Data Pegawai"
+                app:cornerRadius="16dp" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnUbahRole"
                 style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
-                android:layout_marginTop="12dp"
-                android:text="UBAH ROLE PENGGUNA"
-                app:cornerRadius="12dp" />
+                android:layout_marginBottom="12dp"
+                android:fontFamily="@font/poppins_bold"
+                android:text="Ubah Role Pengguna"
+                android:textColor="#C5A059"
+                app:cornerRadius="16dp"
+                app:strokeColor="#C5A059"
+                app:strokeWidth="2dp" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnAddDokumen"
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
-                android:layout_marginTop="12dp"
-                android:text="TAMBAH DOKUMEN MASTER"
-                app:icon="@android:drawable/ic_menu_add"
-                app:cornerRadius="12dp" />
+                android:layout_marginBottom="12dp"
+                android:backgroundTint="#2E7D32"
+                android:fontFamily="@font/poppins_bold"
+                android:text="Tambah Dokumen Master"
+                app:cornerRadius="16dp" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnDeleteUser"
-                style="@style/Widget.MaterialComponents.Button.TextButton"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
-                android:layout_marginTop="12dp"
-                android:text="HAPUS AKUN"
+                android:fontFamily="@font/poppins_bold"
+                android:text="Hapus Akun Pegawai"
                 android:textColor="#DC2626"
-                android:layout_marginBottom="32dp" />
+                app:strokeColor="#DC2626"
+                app:strokeWidth="2dp"
+                app:cornerRadius="16dp"
+                android:layout_marginBottom="20dp" />
 
         </LinearLayout>
-    </ScrollView>
+    </androidx.core.widget.NestedScrollView>
 
     <ProgressBar
         android:id="@+id/progressBar"

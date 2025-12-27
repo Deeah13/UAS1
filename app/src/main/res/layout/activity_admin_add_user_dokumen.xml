@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#F0F7FF">
@@ -8,94 +9,172 @@
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
+        android:layout_height="100dp"
         android:background="#014488"
-        app:layout_constraintTop_toTopOf="parent">
-        <ImageButton
-            android:id="@+id/btnBack"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:src="@drawable/ic_arrow_back"
-            app:tint="#FFFFFF" />
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:fontFamily="@font/poppins_bold"
-            android:text="Tambah Dokumen Pegawai"
-            android:textColor="#FFFFFF"
-            android:textSize="18sp" />
-    </androidx.appcompat.widget.Toolbar>
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <LinearLayout
+    <ImageButton
+        android:id="@+id/btnBack"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="16dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:src="@drawable/ic_arrow_back"
+        app:layout_constraintBottom_toBottomOf="@id/toolbar"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/toolbar"
+        app:tint="#FFFFFF" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/poppins_bold"
+        android:text="Tambah Dokumen Pegawai"
+        android:textColor="#FFFFFF"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="@id/toolbar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/toolbar" />
+
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:orientation="vertical"
-        android:padding="24dp"
+        android:clipToPadding="false"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/toolbar">
 
-        <com.google.android.material.textfield.TextInputLayout
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Jenis Dokumen">
-            <AutoCompleteTextView
-                android:id="@+id/spinnerJenisDokumen"
+            android:orientation="vertical"
+            android:padding="24dp">
+
+            <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="none" />
-        </com.google.android.material.textfield.TextInputLayout>
+                app:cardBackgroundColor="#FFFFFF"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="8dp"
+                app:strokeColor="#014488"
+                app:strokeWidth="1dp">
 
-        <com.google.android.material.textfield.TextInputLayout
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:hint="Nomor Dokumen">
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etNomorDokumen"
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="20dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/poppins_bold"
+                        android:text="RINCIAN DOKUMEN MASTER"
+                        android:textColor="#014488"
+                        android:textSize="12sp"
+                        android:letterSpacing="0.1" />
+
+                    <View
+                        android:layout_width="40dp"
+                        android:layout_height="3dp"
+                        android:background="#C5A059"
+                        android:layout_marginTop="4dp"
+                        android:layout_marginBottom="24dp"/>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="16dp"
+                        android:hint="Jenis Dokumen"
+                        app:startIconDrawable="@drawable/baseline_assignment_24"
+                        app:startIconTint="#014488"
+                        app:boxCornerRadiusTopStart="12dp" app:boxCornerRadiusTopEnd="12dp"
+                        app:boxCornerRadiusBottomStart="12dp" app:boxCornerRadiusBottomEnd="12dp">
+                        <AutoCompleteTextView
+                            android:id="@+id/spinnerJenisDokumen"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/poppins_regular"
+                            android:inputType="none"
+                            android:textSize="14sp" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="16dp"
+                        android:hint="Nomor Dokumen"
+                        app:startIconDrawable="@drawable/baseline_assignment_24"
+                        app:startIconTint="#014488"
+                        app:boxCornerRadiusTopStart="12dp" app:boxCornerRadiusTopEnd="12dp"
+                        app:boxCornerRadiusBottomStart="12dp" app:boxCornerRadiusBottomEnd="12dp">
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/etNomorDokumen"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/poppins_regular"
+                            android:textSize="14sp" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="16dp"
+                        android:hint="Tanggal Terbit (YYYY-MM-DD)"
+                        app:startIconDrawable="@drawable/baseline_assignment_24"
+                        app:startIconTint="#014488"
+                        app:boxCornerRadiusTopStart="12dp" app:boxCornerRadiusTopEnd="12dp"
+                        app:boxCornerRadiusBottomStart="12dp" app:boxCornerRadiusBottomEnd="12dp">
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/etTanggalTerbit"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/poppins_regular"
+                            android:focusable="false"
+                            android:clickable="true"
+                            android:textSize="14sp" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Deskripsi Singkat"
+                        app:startIconDrawable="@drawable/baseline_assignment_24"
+                        app:startIconTint="#014488"
+                        app:boxCornerRadiusTopStart="12dp" app:boxCornerRadiusTopEnd="12dp"
+                        app:boxCornerRadiusBottomStart="12dp" app:boxCornerRadiusBottomEnd="12dp">
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/etDeskripsi"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/poppins_regular"
+                            android:minLines="2"
+                            android:gravity="top"
+                            android:textSize="14sp" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnSimpanDokumen"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-        </com.google.android.material.textfield.TextInputLayout>
+                android:layout_height="60dp"
+                android:layout_marginTop="32dp"
+                android:layout_marginBottom="40dp"
+                android:backgroundTint="#014488"
+                android:fontFamily="@font/poppins_bold"
+                android:text="SIMPAN DOKUMEN PEGAWAI"
+                android:letterSpacing="0.05"
+                app:cornerRadius="16dp"
+                android:elevation="6dp" />
 
-        <com.google.android.material.textfield.TextInputLayout
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:hint="Tanggal Terbit (YYYY-MM-DD)">
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etTanggalTerbit"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:focusable="false"
-                android:clickable="true" />
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <com.google.android.material.textfield.TextInputLayout
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:hint="Deskripsi Singkat">
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etDeskripsi"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnSimpanDokumen"
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:layout_marginTop="32dp"
-            android:backgroundTint="#014488"
-            android:text="SIMPAN DOKUMEN"
-            app:cornerRadius="12dp" />
-
-    </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
 
     <ProgressBar
         android:id="@+id/progressBar"

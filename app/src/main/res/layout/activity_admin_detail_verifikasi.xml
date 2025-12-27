@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#F0F7FF">
@@ -8,29 +9,38 @@
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
+        android:layout_height="100dp"
         android:background="#014488"
-        app:layout_constraintTop_toTopOf="parent">
-        <ImageButton
-            android:id="@+id/btnBack"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:src="@drawable/ic_arrow_back"
-            app:tint="#FFFFFF" />
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:fontFamily="@font/poppins_bold"
-            android:text="Detail Pengajuan"
-            android:textColor="#FFFFFF"
-            android:textSize="18sp" />
-    </androidx.appcompat.widget.Toolbar>
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageButton
+        android:id="@+id/btnBack"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="16dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:src="@drawable/ic_arrow_back"
+        app:layout_constraintBottom_toBottomOf="@id/toolbar"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/toolbar"
+        app:tint="#FFFFFF" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/poppins_bold"
+        android:text="Verifikasi Pengajuan"
+        android:textColor="#FFFFFF"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="@id/toolbar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/toolbar" />
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:clipToPadding="false"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/toolbar">
 
@@ -38,78 +48,238 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="20dp">
+            android:padding="24dp">
 
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:cardCornerRadius="16dp"
-                app:cardElevation="4dp"
-                app:strokeColor="#C5A059"
-                app:strokeWidth="1dp">
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="16dp">
-                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                        android:text="Identitas Pegawai" android:fontFamily="@font/poppins_bold" android:textColor="#014488" />
-                    <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#E2E8F0" android:layout_marginVertical="8dp"/>
-                    <TextView android:id="@+id/tvNamaDetail" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Nama: -" />
-                    <TextView android:id="@+id/tvNipDetail" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="NIP: -" />
-                    <TextView android:id="@+id/tvEmailDetail" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Email: -" />
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
-
-            <com.google.android.material.card.MaterialCardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                app:cardCornerRadius="16dp"
-                app:cardElevation="4dp"
+                android:layout_marginBottom="20dp"
+                app:cardBackgroundColor="#E6F2FF"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="6dp"
                 app:strokeColor="#014488"
                 app:strokeWidth="1dp">
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:padding="16dp">
-                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                        android:text="Rincian Kenaikan Pangkat" android:fontFamily="@font/poppins_bold" android:textColor="#014488" />
-                    <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#E2E8F0" android:layout_marginVertical="8dp"/>
-                    <TextView android:id="@+id/tvJenisDetail" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textStyle="bold" android:text="Jenis: -" />
-                    <TextView android:id="@+id/tvPangkatSaatIni" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Pangkat Sekarang: -" />
-                    <TextView android:id="@+id/tvJabatanSaatIni" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Jabatan Sekarang: -" />
-                    <TextView android:id="@+id/tvPangkatTujuan" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Target Pangkat: -" android:textColor="#2E7D32" android:textStyle="bold" />
-                    <TextView android:id="@+id/tvJabatanTujuan" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Target Jabatan: -" android:textColor="#2E7D32" android:textStyle="bold" />
+                    android:padding="20dp">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/poppins_bold"
+                        android:text="IDENTITAS PEGAWAI"
+                        android:textColor="#014488"
+                        android:textSize="12sp"
+                        android:letterSpacing="0.1" />
+                    <View
+                        android:layout_width="40dp"
+                        android:layout_height="3dp"
+                        android:background="#014488"
+                        android:layout_marginTop="4dp" />
+
+                    <TextView
+                        android:id="@+id/tvNamaDetail"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/poppins_bold"
+                        android:textColor="#2D3748"
+                        android:layout_marginTop="16dp"
+                        android:textSize="15sp"
+                        tools:text="Nama Pegawai" />
+                    <TextView
+                        android:id="@+id/tvNipDetail"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/poppins_regular"
+                        android:textColor="#718096"
+                        tools:text="NIP: 19800101" />
+                    <TextView
+                        android:id="@+id/tvEmailDetail"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/poppins_regular"
+                        android:textColor="#718096"
+                        tools:text="email@bps.go.id" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                app:cardCornerRadius="16dp"
-                app:cardElevation="4dp">
+                android:layout_marginBottom="20dp"
+                app:cardBackgroundColor="#FFF9E6"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="6dp"
+                app:strokeColor="#C5A059"
+                app:strokeWidth="1dp">
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:padding="16dp">
-                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                        android:fontFamily="@font/poppins_bold" android:text="Dokumen Pendukung" android:textColor="#014488" />
+                    android:padding="20dp">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/poppins_bold"
+                        android:text="RINCIAN KENAIKAN"
+                        android:textColor="#C5A059"
+                        android:textSize="12sp"
+                        android:letterSpacing="0.1" />
+                    <View
+                        android:layout_width="40dp"
+                        android:layout_height="3dp"
+                        android:background="#C5A059"
+                        android:layout_marginTop="4dp" />
+
+                    <TextView
+                        android:id="@+id/tvJenisDetail"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/poppins_bold"
+                        android:textColor="#2D3748"
+                        android:textSize="18sp"
+                        android:layout_marginTop="16dp"
+                        tools:text="REGULER"/>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:orientation="horizontal">
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Posisi Sekarang"
+                                android:textColor="#718096"
+                                android:textSize="14sp"
+                                android:fontFamily="@font/poppins_regular" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="10dp"
+                                android:text="Pangkat Sekarang"
+                                android:textColor="#2D3748"
+                                android:textSize="11sp"
+                                android:fontFamily="@font/poppins_bold" />
+                            <TextView
+                                android:id="@+id/tvPangkatSaatIni"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="@font/poppins_regular"
+                                android:textColor="#4A5568"
+                                android:textSize="13sp" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="6dp"
+                                android:text="Jabatan Sekarang"
+                                android:textColor="#2D3748"
+                                android:textSize="11sp"
+                                android:fontFamily="@font/poppins_bold" />
+                            <TextView
+                                android:id="@+id/tvJabatanSaatIni"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="@font/poppins_regular"
+                                android:textColor="#4A5568"
+                                android:textSize="13sp" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:gravity="end">
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Target Kenaikan"
+                                android:textColor="#718096"
+                                android:textSize="14sp"
+                                android:fontFamily="@font/poppins_regular" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="10dp"
+                                android:text="Pangkat Tujuan"
+                                android:textColor="#2D3748"
+                                android:textSize="11sp"
+                                android:fontFamily="@font/poppins_bold" />
+                            <TextView
+                                android:id="@+id/tvPangkatTujuan"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="@font/poppins_regular"
+                                android:textColor="#2E7D32"
+                                android:textSize="13sp" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="6dp"
+                                android:text="Jabatan Tujuan"
+                                android:textColor="#2D3748"
+                                android:textSize="11sp"
+                                android:fontFamily="@font/poppins_bold" />
+                            <TextView
+                                android:id="@+id/tvJabatanTujuan"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="@font/poppins_regular"
+                                android:textColor="#2E7D32"
+                                android:textSize="13sp" />
+                        </LinearLayout>
+                    </LinearLayout>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="6dp">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="20dp">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/poppins_bold"
+                        android:text="DOKUMEN PENDUKUNG"
+                        android:textColor="#014488"
+                        android:textSize="12sp" />
+
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/rvLampiranVerifikasi"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
                         android:nestedScrollingEnabled="false" />
+
                     <TextView
                         android:id="@+id/tvLampiranEmpty"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Tidak ada berkas"
-                        android:visibility="gone" />
+                        android:fontFamily="@font/poppins_regular"
+                        android:text="Tidak ada berkas yang dilampirkan"
+                        android:textColor="#718096"
+                        android:textSize="12sp"
+                        android:visibility="gone"
+                        android:gravity="center"
+                        android:layout_marginTop="8dp" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
@@ -118,21 +288,40 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                app:cardCornerRadius="16dp"
-                app:cardElevation="4dp"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="6dp"
                 android:visibility="gone"
-                app:strokeWidth="1dp">
+                app:strokeWidth="2dp">
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:padding="16dp">
-                    <TextView android:id="@+id/tvLabelHasil" android:layout_width="wrap_content" android:layout_height="wrap_content"
-                        android:fontFamily="@font/poppins_bold" android:text="Riwayat Verifikasi" />
-                    <TextView android:id="@+id/tvStatusFinal" android:layout_width="wrap_content" android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp" android:textStyle="bold" android:text="STATUS: -" />
-                    <TextView android:id="@+id/tvCatatanHistory" android:layout_width="match_parent" android:layout_height="wrap_content"
-                        android:layout_marginTop="4dp" android:text="Catatan: -" />
+                    android:padding="20dp">
+                    <TextView
+                        android:id="@+id/tvLabelHasil"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/poppins_bold"
+                        android:text="RIWAYAT VERIFIKASI"
+                        android:textSize="12sp"
+                        android:letterSpacing="0.1" />
+
+                    <TextView
+                        android:id="@+id/tvStatusFinal"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:fontFamily="@font/poppins_bold"
+                        android:text="STATUS: -"
+                        android:textSize="14sp" />
+                    <TextView
+                        android:id="@+id/tvCatatanHistory"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:fontFamily="@font/poppins_regular"
+                        android:text="Catatan: -"
+                        android:textColor="#2D3748" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
@@ -141,45 +330,68 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:hint="Masukkan Catatan untuk Pegawai">
+                android:layout_marginTop="24dp"
+                android:hint="Masukkan Catatan untuk Pegawai"
+                app:boxCornerRadiusBottomEnd="16dp"
+                app:boxCornerRadiusBottomStart="16dp"
+                app:boxCornerRadiusTopEnd="16dp"
+                app:boxCornerRadiusTopStart="16dp">
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etCatatan"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:minLines="3"
+                    android:fontFamily="@font/poppins_regular"
                     android:gravity="top" />
             </com.google.android.material.textfield.TextInputLayout>
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnApprove"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="56dp"
-                android:layout_marginTop="20dp"
-                android:backgroundTint="#2E7D32"
-                android:text="SETUJUI PENGAJUAN"
-                app:cornerRadius="12dp" />
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="24dp"
+                android:weightSum="2">
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnRevisi"
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                android:layout_width="match_parent"
-                android:layout_height="56dp"
-                android:layout_marginTop="10dp"
-                android:text="MINTA REVISI"
-                android:textColor="#C5A059"
-                app:cornerRadius="12dp"
-                app:strokeColor="#C5A059" />
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnApprove"
+                    android:layout_width="0dp"
+                    android:layout_height="60dp"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="8dp"
+                    android:backgroundTint="#2E7D32"
+                    android:fontFamily="@font/poppins_bold"
+                    android:text="SETUJUI"
+                    app:cornerRadius="16dp"
+                    android:elevation="4dp" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnRevisi"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:layout_width="0dp"
+                    android:layout_height="60dp"
+                    android:layout_weight="1"
+                    android:layout_marginStart="8dp"
+                    android:fontFamily="@font/poppins_bold"
+                    android:text="REVISI"
+                    android:textColor="#C5A059"
+                    app:cornerRadius="16dp"
+                    app:strokeColor="#C5A059"
+                    app:strokeWidth="2dp" />
+            </LinearLayout>
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnReject"
-                style="@style/Widget.MaterialComponents.Button.TextButton"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="12dp"
+                android:fontFamily="@font/poppins_bold"
                 android:text="TOLAK PENGAJUAN"
                 android:textColor="#DC2626"
-                android:layout_marginBottom="30dp" />
+                app:cornerRadius="16dp"
+                app:strokeColor="#DC2626"
+                app:strokeWidth="2dp"
+                android:layout_marginBottom="32dp" />
 
         </LinearLayout>
     </ScrollView>

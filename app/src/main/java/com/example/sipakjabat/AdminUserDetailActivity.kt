@@ -20,6 +20,7 @@ class AdminUserDetailActivity : AppCompatActivity() {
     private var userId: Long = -1
 
     // Variabel penampung data untuk dikirim ke halaman Edit
+    private var currentNip: String = "" // Perbaikan: Menambahkan penampung NIP
     private var currentNama: String = ""
     private var currentEmail: String = ""
     private var currentPangkat: String = ""
@@ -45,17 +46,17 @@ class AdminUserDetailActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        // Memuat ulang detail setiap kali kembali ke halaman ini (misal setelah edit atau tambah dokumen)
         loadUserDetail()
     }
 
     private fun setupListeners() {
         binding.btnBack.setOnClickListener { finish() }
 
-        // FITUR EDIT DATA: Berpindah ke AdminEditUserActivity dengan membawa data saat ini
+        // FITUR EDIT DATA: Mengirimkan NIP agar tidak tampil sebagai "-"
         binding.btnEditUser.setOnClickListener {
             val intent = Intent(this, AdminEditUserActivity::class.java).apply {
                 putExtra("USER_ID", userId)
+                putExtra("NIP", currentNip) // Perbaikan: Mengirim NIP ke form edit
                 putExtra("NAMA", currentNama)
                 putExtra("EMAIL", currentEmail)
                 putExtra("PANGKAT", currentPangkat)
@@ -65,17 +66,14 @@ class AdminUserDetailActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
-        // FITUR UBAH ROLE: Menampilkan dialog pilihan role
         binding.btnUbahRole.setOnClickListener { showRoleDialog() }
 
-        // FITUR KE-7: TAMBAH DOKUMEN MASTER KE PEGAWAI
         binding.btnAddDokumen.setOnClickListener {
             val intent = Intent(this, AdminAddUserDokumenActivity::class.java)
             intent.putExtra("USER_ID", userId)
             startActivity(intent)
         }
 
-        // FITUR HAPUS: Konfirmasi hapus akun
         binding.btnDeleteUser.setOnClickListener { showDeleteConfirmation() }
     }
 
@@ -85,12 +83,13 @@ class AdminUserDetailActivity : AppCompatActivity() {
 
         lifecycleScope.launch {
             try {
-                // Endpoint: GET /api/admin/users/{id}
+                // Backend mengembalikan objek User yang berisi field nip
                 val response = RetrofitClient.instance.getUserDetail("Bearer $token", userId)
                 if (response.isSuccessful) {
                     val user = response.body()?.data
                     user?.let {
                         // Simpan ke variabel lokal agar bisa dikirim ke form edit
+                        currentNip = it.nip ?: "" // Perbaikan: Mengambil NIP dari response API
                         currentNama = it.namaLengkap
                         currentEmail = it.email
                         currentPangkat = it.pangkatGolongan ?: ""
@@ -99,10 +98,10 @@ class AdminUserDetailActivity : AppCompatActivity() {
 
                         // Tampilkan ke UI
                         binding.tvDetailNama.text = it.namaLengkap
-                        binding.tvDetailNip.text = "NIP: ${it.nip}"
+                        binding.tvDetailNip.text = "NIP: ${currentNip.ifEmpty { "-" }}"
                         binding.tvDetailEmail.text = "Email: ${it.email}"
-                        binding.tvDetailRole.text = "ROLE: ${it.role}"
-                        binding.tvDetailPangkat.text = "Pangkat/Gol: ${currentPangkat.ifEmpty { "-" }}"
+                        binding.tvDetailRole.text = it.role.toString()
+                        binding.tvDetailPangkat.text = "Pangkat: ${currentPangkat.ifEmpty { "-" }}"
                         binding.tvDetailJabatan.text = "Jabatan: ${currentJabatan.ifEmpty { "-" }}"
                         binding.tvDetailTmt.text = "TMT Pangkat: ${currentTmt.ifEmpty { "-" }}"
                     }
@@ -131,18 +130,14 @@ class AdminUserDetailActivity : AppCompatActivity() {
 
         lifecycleScope.launch {
             try {
-                // Mengirim field 'newRole' sesuai request backend UbahRoleRequestDTO
                 val request = UbahRoleRequestDTO(newRole = newRole.uppercase())
-
-                // Endpoint: PUT /api/admin/users/{id}/role
                 val response = RetrofitClient.instance.ubahRole("Bearer $token", userId, request)
 
                 if (response.isSuccessful) {
                     Toast.makeText(this@AdminUserDetailActivity, "Role berhasil diubah ke $newRole", Toast.LENGTH_SHORT).show()
                     loadUserDetail()
                 } else {
-                    val errorMsg = response.errorBody()?.string() ?: "Gagal mengubah role"
-                    Toast.makeText(this@AdminUserDetailActivity, errorMsg, Toast.LENGTH_LONG).show()
+                    Toast.makeText(this@AdminUserDetailActivity, "Gagal mengubah role", Toast.LENGTH_LONG).show()
                 }
             } catch (e: Exception) {
                 Toast.makeText(this@AdminUserDetailActivity, "Kesalahan koneksi", Toast.LENGTH_SHORT).show()
@@ -165,15 +160,12 @@ class AdminUserDetailActivity : AppCompatActivity() {
         val token = tokenManager.getToken() ?: return
         lifecycleScope.launch {
             try {
-                // Endpoint: DELETE /api/admin/users/{id}
                 val response = RetrofitClient.instance.deleteUser("Bearer $token", userId)
                 if (response.isSuccessful) {
                     Toast.makeText(this@AdminUserDetailActivity, "Pengguna berhasil dihapus", Toast.LENGTH_SHORT).show()
                     finish()
                 } else {
-                    // Backend menolak hapus jika masih ada pengajuan aktif
-                    val errorMsg = response.errorBody()?.string() ?: "Gagal menghapus pengguna"
-                    Toast.makeText(this@AdminUserDetailActivity, errorMsg, Toast.LENGTH_LONG).show()
+                    Toast.makeText(this@AdminUserDetailActivity, "Gagal menghapus pengguna", Toast.LENGTH_LONG).show()
                 }
             } catch (e: Exception) {
                 Toast.makeText(this@AdminUserDetailActivity, "Gagal menghapus", Toast.LENGTH_SHORT).show()

@@ -17,6 +17,7 @@ class AdminActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityAdminBinding
     private lateinit var tokenManager: TokenManager
+    private var isMenuOpen = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,114 +25,139 @@ class AdminActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         tokenManager = TokenManager(this)
-        setupUI()
 
-        val token = tokenManager.getToken()
-        if (token != null) {
-            fetchProfileData("Bearer $token")
+        if (tokenManager.getToken() == null) {
+            redirectToLogin()
+            return
         }
+
+        setupUI()
     }
 
     override fun onResume() {
         super.onResume()
-        // Mengambil data statistik terbaru setiap kali admin kembali ke Dashboard
-        loadSummaryData()
+        // Memuat ulang statistik dan menyapa admin
+        loadDashboardData()
     }
 
     private fun setupUI() {
-        // 1. Navigasi ke Daftar Pengajuan Baru (Verifikasi)
-        binding.btnVerifyList.setOnClickListener {
+        // Klik logo untuk memicu animasi mirror
+        binding.mainLogoTrigger.setOnClickListener {
+            toggleRadialMenu()
+        }
+
+        // Navigasi ke Profil (Sama seperti Pegawai)
+        binding.btnMenuProfil.setOnClickListener {
+            startActivity(Intent(this, ProfileActivity::class.java))
+        }
+
+        binding.btnMenuVerifikasi.setOnClickListener {
             startActivity(Intent(this, AdminPengajuanMasukActivity::class.java))
         }
 
-        // 2. Navigasi ke Riwayat Seluruh Pengajuan
-        binding.btnAllHistory.setOnClickListener {
+        binding.btnMenuRiwayat.setOnClickListener {
             startActivity(Intent(this, AdminAllPengajuanActivity::class.java))
         }
 
-        // 3. FIX: Navigasi ke Manajemen Pengguna (Daftar Pegawai)
-        binding.btnManageUsers.setOnClickListener {
-            // Berpindah ke halaman daftar pegawai
-            val intent = Intent(this, AdminUserListActivity::class.java)
-            startActivity(intent)
+        binding.btnMenuUsers.setOnClickListener {
+            startActivity(Intent(this, AdminUserListActivity::class.java))
         }
 
-        // 4. Konfirmasi Keluar
         binding.btnLogout.setOnClickListener {
             showLogoutConfirmationDialog()
         }
     }
 
-    private fun fetchProfileData(tokenWithBearer: String) {
-        lifecycleScope.launch {
-            try {
-                val response = RetrofitClient.instance.getProfile(tokenWithBearer)
-                if (response.isSuccessful) {
-                    val profile = response.body()?.data
-                    binding.tvWelcome.text = "Halo, ${profile?.namaLengkap ?: "Admin"}"
-                    binding.tvAdminNip.text = "NIP: ${profile?.nip ?: "-"}"
-                }
-            } catch (e: Exception) { /* Abaikan jika gagal */ }
-        }
-    }
-
     /**
-     * Memuat data ringkasan dengan validasi manual agar angka "Revisi" akurat
+     * Mengambil data profil dan ringkasan statistik status pengajuan
      */
-    private fun loadSummaryData() {
+    private fun loadDashboardData() {
         val token = tokenManager.getToken() ?: return
         binding.progressBar.visibility = View.VISIBLE
 
         lifecycleScope.launch {
             try {
-                // Mengambil data dari dua endpoint sekaligus untuk sinkronisasi data
-                val summaryDeferred = async { RetrofitClient.instance.getAdminSummary("Bearer $token") }
-                val allDataDeferred = async { RetrofitClient.instance.getAllPengajuan("Bearer $token") }
+                // Mengambil summary dan daftar lengkap secara asinkron untuk validasi data revisi
+                val summaryDef = async { RetrofitClient.instance.getAdminSummary("Bearer $token") }
+                val allDataDef = async { RetrofitClient.instance.getAllPengajuan("Bearer $token") }
 
-                val summaryResponse = summaryDeferred.await()
-                val allResponse = allDataDeferred.await()
+                val summaryRes = summaryDef.await()
+                val allRes = allDataDef.await()
 
-                if (summaryResponse.isSuccessful) {
-                    val summary = summaryResponse.body()?.data
-                    val listAll = allResponse.body()?.data ?: emptyList()
-
-                    // Menghitung manual status PERLU_REVISI dari daftar riwayat sebagai validasi
+                if (summaryRes.isSuccessful) {
+                    val summary = summaryRes.body()?.data
+                    val listAll = allRes.body()?.data ?: emptyList()
                     val manualRevisiCount = listAll.count { it.status == "PERLU_REVISI" }
 
-                    // Update UI Statistik
+                    // Update UI Statistik di Kartu Tengah
                     binding.tvTotalMasuk.text = summary?.jumlahSubmitted?.toString() ?: "0"
                     binding.tvTotalApproved.text = summary?.jumlahApproved?.toString() ?: "0"
                     binding.tvTotalRejected.text = summary?.jumlahRejected?.toString() ?: "0"
 
-                    // Gunakan hitungan manual jika backend summary memberikan angka 0 padahal data ada
-                    val finalRevisiCount = if (summary?.jumlahRevisi == 0 && manualRevisiCount > 0) {
-                        manualRevisiCount
+                    // Gunakan validasi manual jika backend memberikan angka 0 padahal ada data
+                    binding.tvTotalRevisi.text = if (summary?.jumlahRevisi == 0 && manualRevisiCount > 0) {
+                        manualRevisiCount.toString()
                     } else {
-                        summary?.jumlahRevisi ?: 0
+                        summary?.jumlahRevisi?.toString() ?: "0"
                     }
-
-                    binding.tvTotalRevisi.text = finalRevisiCount.toString()
                 }
             } catch (e: Exception) {
-                Toast.makeText(this@AdminActivity, "Gagal memperbarui dashboard", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@AdminActivity, "Gagal sinkronisasi dashboard", Toast.LENGTH_SHORT).show()
             } finally {
                 binding.progressBar.visibility = View.GONE
             }
         }
     }
 
+    private fun toggleRadialMenu() {
+        isMenuOpen = !isMenuOpen
+        val targetAlpha = if (isMenuOpen) 1f else 0f
+        val targetScale = if (isMenuOpen) 1f else 0f
+
+        val menuViews = listOf(
+            binding.btnMenuProfil,
+            binding.btnMenuVerifikasi,
+            binding.btnMenuRiwayat,
+            binding.btnMenuUsers,
+            binding.btnLogout
+        )
+
+        menuViews.forEachIndexed { index, view ->
+            if (isMenuOpen) {
+                view.visibility = View.VISIBLE
+                view.scaleX = 0f
+                view.scaleY = 0f
+            }
+
+            view.animate()
+                .alpha(targetAlpha)
+                .scaleX(targetScale)
+                .scaleY(targetScale)
+                .setDuration(450L + (index * 80L))
+                .setInterpolator(android.view.animation.OvershootInterpolator(1.4f))
+                .withEndAction {
+                    if (!isMenuOpen) view.visibility = View.INVISIBLE
+                }
+                .start()
+        }
+    }
+
     private fun showLogoutConfirmationDialog() {
         MaterialAlertDialogBuilder(this)
             .setTitle("Konfirmasi")
-            .setMessage("Apakah Anda yakin ingin keluar?")
-            .setPositiveButton("Keluar") { _, _ ->
+            .setMessage("Apakah Anda yakin ingin keluar dari sesi Administrator?")
+            .setPositiveButton("Ya, Keluar") { _, _ ->
                 tokenManager.clear()
-                val intent = Intent(this, MainActivity::class.java)
-                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                startActivity(intent)
-                finish()
+                redirectToLogin()
             }
             .setNegativeButton("Batal", null)
             .show()
+    }
+
+    private fun redirectToLogin() {
+        val intent = Intent(this, MainActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        startActivity(intent)
+        finish()
     }
 }
