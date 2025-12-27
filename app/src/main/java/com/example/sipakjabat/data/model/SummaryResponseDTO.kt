@@ -2,11 +2,11 @@ package com.example.sipakjabat.data.model
 
 import com.google.gson.annotations.SerializedName
 
+// Sesuaikan nama class dengan yang Anda gunakan di frontend
 data class SummaryResponseDTO(
-    @SerializedName("totalPengajuan") val totalPengajuan: Long,
-    @SerializedName("jumlahDraft") val jumlahDraft: Long,
-    @SerializedName("jumlahSubmitted") val jumlahSubmitted: Long,
-    @SerializedName("jumlahPerluRevisi") val jumlahPerluRevisi: Long,
-    @SerializedName("jumlahApproved") val jumlahApproved: Long,
-    @SerializedName("jumlahRejected") val jumlahRejected: Long
+    @SerializedName("jumlahSubmitted") val jumlahSubmitted: Int,
+    @SerializedName("jumlahApproved") val jumlahApproved: Int,
+    @SerializedName("jumlahRejected") val jumlahRejected: Int,
+    // Tambahkan field ini agar error 'Unresolved reference' hilang
+    @SerializedName("jumlahRevisi") val jumlahRevisi: Int
 )

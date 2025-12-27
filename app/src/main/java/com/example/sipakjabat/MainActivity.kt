@@ -24,7 +24,7 @@ class MainActivity : AppCompatActivity() {
 
         tokenManager = TokenManager(this)
 
-        // Pengecekan Auto-login: Langsung ke Dashboard jika token & role sudah ada
+        // Cek sesi login
         if (tokenManager.getToken() != null && tokenManager.getRole() != null) {
             navigateToDashboard(tokenManager.getRole()!!)
             return
@@ -56,13 +56,13 @@ class MainActivity : AppCompatActivity() {
                     if (token != null) {
                         fetchProfileAndRedirect("Bearer $token")
                     } else {
-                        handleLoginError("Token tidak diterima dari server.")
+                        handleLoginError("Login gagal.")
                     }
                 } else {
                     handleLoginError("NIP atau Password salah.")
                 }
             } catch (e: Exception) {
-                handleLoginError("Kesalahan jaringan: ${e.message}")
+                handleLoginError("Koneksi gagal: ${e.message}")
             }
         }
     }
@@ -77,22 +77,21 @@ class MainActivity : AppCompatActivity() {
                 val pureToken = tokenWithBearer.removePrefix("Bearer ")
 
                 if (role != null) {
-                    // Simpan data autentikasi
+                    // Menggunakan fungsi saveAuthData dari TokenManager.kt
                     tokenManager.saveAuthData(pureToken, role)
                     navigateToDashboard(role)
                 } else {
-                    handleLoginError("Gagal mendapatkan peran pengguna.")
+                    handleLoginError("Gagal identifikasi Role.")
                 }
             } else {
-                handleLoginError("Gagal mengambil data profil.")
+                handleLoginError("Gagal memuat profil.")
             }
         } catch (e: Exception) {
-            handleLoginError("Kesalahan jaringan saat mengambil profil: ${e.message}")
+            handleLoginError("Error: ${e.message}")
         }
     }
 
     private fun navigateToDashboard(role: String) {
-        // Navigasi Berbasis Peran: VERIFIKATOR vs Pegawai
         val intent = if (role.equals("VERIFIKATOR", ignoreCase = true)) {
             Intent(this, AdminActivity::class.java)
         } else {
@@ -107,9 +106,6 @@ class MainActivity : AppCompatActivity() {
         setLoadingState(false)
     }
 
-    /**
-     * Mengelola feedback visual saat proses login sedang berjalan
-     */
     private fun setLoadingState(isLoading: Boolean) {
         binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
         binding.btnLogin.text = if (isLoading) "" else "MASUK"

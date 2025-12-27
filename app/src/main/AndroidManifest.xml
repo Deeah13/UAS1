@@ -25,6 +25,8 @@
 
         <activity android:name=".ProfileActivity" />
 
+        <activity android:name=".AdminAllPengajuanActivity" android:exported="false" />
+
         <activity
             android:name=".TambahDokumenActivity"
             android:exported="false" />
@@ -41,6 +43,13 @@
             android:name=".AdminActivity"
             android:exported="false" />
 
+        <activity
+            android:name=".AdminPengajuanMasukActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".AdminDetailVerifikasiActivity"
+            android:exported="false" />
         <activity
             android:name=".EditProfileActivity"
             android:exported="false"

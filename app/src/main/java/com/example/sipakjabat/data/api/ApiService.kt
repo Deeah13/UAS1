@@ -6,12 +6,12 @@ import retrofit2.http.*
 
 interface ApiService {
 
-    // --- 1. AUTH & PROFILE (Login & Data Pegawai) ---
+    // --- 1. AUTH & PROFILE ---
 
     @POST("api/auth/login")
     suspend fun login(@Body request: LoginRequest): Response<AuthResponse>
 
-    @GET("api/pegawai/profile")
+    @GET("api/user/profile")
     suspend fun getProfile(
         @Header("Authorization") token: String
     ): Response<GlobalResponse<ProfileResponse>>
@@ -29,7 +29,7 @@ interface ApiService {
     ): Response<GlobalResponse<String>>
 
 
-    // --- 2. MASTER DOKUMEN PEGAWAI (Tempat Simpan File SK/SKP) ---
+    // --- 2. MASTER DOKUMEN PEGAWAI (ROLE PEGAWAI) ---
 
     @GET("api/pegawai/dokumen")
     suspend fun getMyDocuments(
@@ -49,9 +49,9 @@ interface ApiService {
     ): Response<GlobalResponse<String>>
 
 
-    // --- 3. PENGELOLAAN PENGAJUAN (Kenaikan Pangkat/Jabatan) ---
+    // --- 3. PENGELOLAAN PENGAJUAN (ROLE PEGAWAI) ---
 
-    @GET("api/pegawai/pengajuan")
+    @GET("api/user/pengajuan")
     suspend fun getRiwayatPengajuan(
         @Header("Authorization") token: String
     ): Response<GlobalResponse<List<PengajuanResponse>>>
@@ -62,7 +62,7 @@ interface ApiService {
         @Body request: PengajuanCreateRequestDTO
     ): Response<GlobalResponse<PengajuanResponse>>
 
-    @GET("api/pegawai/pengajuan/{id}")
+    @GET("api/user/pengajuan/{id}")
     suspend fun getDetailPengajuan(
         @Header("Authorization") token: String,
         @Path("id") id: Long
@@ -87,9 +87,56 @@ interface ApiService {
         @Path("id") id: Long
     ): Response<GlobalResponse<String>>
 
-    // --- 4. ENDPOINT KHUSUS ADMIN / VERIFIKATOR ---
-    // Disesuaikan dengan AdminController.java di backend
 
+    // --- 4. ENDPOINT KHUSUS ADMIN / VERIFIKATOR ---
+    // Sesuai dengan AdminController.java
+
+    // Manajemen Pengguna
+    @POST("api/admin/users")
+    suspend fun createUser(
+        @Header("Authorization") token: String,
+        @Body request: AdminCreateUserRequest
+    ): Response<GlobalResponse<ProfileResponse>> // ProfileResponse atau UserResponse sesuai model Anda
+
+    @GET("api/admin/users")
+    suspend fun getAllUsers(
+        @Header("Authorization") token: String
+    ): Response<GlobalResponse<List<ProfileResponse>>>
+
+    @GET("api/admin/users/{id}")
+    suspend fun getUserDetail(
+        @Header("Authorization") token: String,
+        @Path("id") id: Long
+    ): Response<GlobalResponse<ProfileResponse>>
+
+    @PUT("api/admin/users/{id}")
+    suspend fun updateUser(
+        @Header("Authorization") token: String,
+        @Path("id") id: Long,
+        @Body request: UpdateUserByAdminRequest
+    ): Response<GlobalResponse<ProfileResponse>>
+
+    @PUT("api/admin/users/{id}/role")
+    suspend fun ubahRole(
+        @Header("Authorization") token: String,
+        @Path("id") id: Long,
+        @Body request: UbahRoleRequestDTO
+    ): Response<GlobalResponse<ProfileResponse>>
+
+    @DELETE("api/admin/users/{id}")
+    suspend fun deleteUser(
+        @Header("Authorization") token: String,
+        @Path("id") id: Long
+    ): Response<GlobalResponse<String>>
+
+    @POST("api/admin/users/{userId}/dokumen")
+    suspend fun createDokumenForUser(
+        @Header("Authorization") token: String,
+        @Path("userId") userId: Long,
+        @Body request: CreateDokumenRequest
+    ): Response<GlobalResponse<DokumenResponse>>
+
+    // Manajemen Pengajuan (Admin)
     @GET("api/admin/pengajuan/all")
     suspend fun getAllPengajuan(
         @Header("Authorization") token: String
@@ -104,6 +151,13 @@ interface ApiService {
     suspend fun getAdminSummary(
         @Header("Authorization") token: String
     ): Response<GlobalResponse<SummaryResponseDTO>>
+
+    // PERBAIKAN: Menambahkan getAdminDetailPengajuan yang sebelumnya menyebabkan error
+    @GET("api/admin/pengajuan/{id}")
+    suspend fun getAdminDetailPengajuan(
+        @Header("Authorization") token: String,
+        @Path("id") id: Long
+    ): Response<GlobalResponse<PengajuanResponse>>
 
     @POST("api/admin/pengajuan/{id}/approve")
     suspend fun approvePengajuan(

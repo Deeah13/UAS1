@@ -55,14 +55,11 @@ class DetailPengajuanActivity : AppCompatActivity() {
     }
 
     private fun setupUI() {
-        // Upgrade Toolbar & Navigation
         setSupportActionBar(binding.toolbar)
-        supportActionBar?.setDisplayShowTitleEnabled(false) // Sembunyikan judul bawaan sipakjabat
+        supportActionBar?.setDisplayShowTitleEnabled(false)
 
-        // Klik tombol back manual sesuai layout baru
         binding.btnBack.setOnClickListener { finish() }
 
-        // Tombol Aksi
         binding.btnKelolaDokumen.setOnClickListener { showDocumentSelectionDialog() }
         binding.btnSubmit.setOnClickListener { showSubmitConfirmationDialog() }
         binding.btnDelete.setOnClickListener { showDeleteConfirmationDialog() }
@@ -83,11 +80,9 @@ class DetailPengajuanActivity : AppCompatActivity() {
     }
 
     private fun updateUI(state: DetailPengajuanUiState) {
-        // Handle Loading State
         binding.progressBar.visibility = if (state.isLoading) View.VISIBLE else View.GONE
         binding.contentLayout.visibility = if (state.isLoading) View.GONE else View.VISIBLE
 
-        // Menampilkan Pesan Error/Sukses
         state.errorMessage?.let {
             Toast.makeText(this, it, Toast.LENGTH_LONG).show()
             viewModel.clearMessages()
@@ -95,55 +90,48 @@ class DetailPengajuanActivity : AppCompatActivity() {
 
         state.successMessage?.let {
             Toast.makeText(this, it, Toast.LENGTH_SHORT).show()
-            if (it == "Draf pengajuan berhasil dihapus") {
-                finish()
-            }
+            if (it == "Draf pengajuan berhasil dihapus") finish()
             viewModel.clearMessages()
         }
 
         state.pengajuan?.let { pengajuan ->
             // 1. Badge Status
             binding.tvStatus.text = state.statusText
-            val color = ContextCompat.getColor(this, state.statusColorRes)
-            binding.cardStatus.setCardBackgroundColor(color)
-            binding.tvStatus.setTextColor(ContextCompat.getColor(this, android.R.color.white))
+            binding.cardStatus.setCardBackgroundColor(ContextCompat.getColor(this, state.statusColorRes))
 
-            // 2. Informasi Utama
-            binding.tvJenisPengajuan.text = pengajuan.jenisPengajuan
-            binding.tvTargetPangkat.text = pengajuan.pangkatTujuan ?: "-"
-            binding.tvTargetJabatan.text = pengajuan.jabatanTujuan ?: "-"
+            // 2. Identitas Pegawai
+            binding.tvNamaDetail.text = "Nama: ${pengajuan.user?.namaLengkap ?: "-"}"
+            binding.tvNipDetail.text = "NIP: ${pengajuan.user?.nip ?: "-"}"
+            binding.tvEmailDetail.text = "Email: ${pengajuan.user?.email ?: "-"}"
 
-            // 3. Lampiran Dokumen
+            // 3. Rincian Pengajuan
+            binding.tvJenisDetail.text = pengajuan.jenisPengajuan
+            binding.tvPangkatSaatIni.text = pengajuan.pangkatSaatIni ?: "-"
+            binding.tvJabatanSaatIni.text = pengajuan.jabatanSaatIni ?: "-"
+            binding.tvPangkatTujuan.text = pengajuan.pangkatTujuan ?: "-"
+            binding.tvJabatanTujuan.text = pengajuan.jabatanTujuan ?: "-"
+
+            // 4. Lampiran Dokumen
             lampiranAdapter.submitList(pengajuan.lampiran)
             binding.tvLampiranEmpty.visibility = if (pengajuan.lampiran.isEmpty()) View.VISIBLE else View.GONE
 
-            // 4. Syarat Dokumen Dinamis
-            val syaratText = when (pengajuan.jenisPengajuan) {
-                "REGULER" -> "Wajib melampirkan: SK Pangkat dan SKP."
-                "FUNGSIONAL" -> "Wajib melampirkan: SK Pangkat, SK Jabatan, SKP, dan PAK."
-                "STRUKTURAL" -> "Wajib melampirkan: SK Pangkat, SK Jabatan, SK Pelantikan, SPMT, dan SKP."
-                else -> "Silakan lampirkan dokumen pendukung yang sesuai."
+            // 5. Syarat Dokumen
+            binding.tvSyaratDokumen.text = when (pengajuan.jenisPengajuan) {
+                "REGULER" -> "Wajib: SK Pangkat dan SKP."
+                "FUNGSIONAL" -> "Wajib: SK Pangkat, SK Jabatan, SKP, dan PAK."
+                "STRUKTURAL" -> "Wajib: SK Pangkat, SK Jabatan, SK Pelantikan, SPMT, dan SKP."
+                else -> "Lampirkan dokumen pendukung."
             }
-            binding.tvSyaratDokumen.text = syaratText
             binding.cardSyarat.visibility = if (state.canAttachDocuments) View.VISIBLE else View.GONE
 
-            // 5. Pesan Admin / Catatan (Tampil hanya jika ada isi)
-            if (!pengajuan.catatanVerifikator.isNullOrBlank()) {
-                binding.cardCatatan.visibility = View.VISIBLE
-                binding.tvCatatanVerifikator.text = pengajuan.catatanVerifikator
-            } else {
-                binding.cardCatatan.visibility = View.GONE
-            }
+            // 6. Catatan & Penolakan
+            binding.cardCatatan.visibility = if (!pengajuan.catatanVerifikator.isNullOrBlank()) View.VISIBLE else View.GONE
+            binding.tvCatatanVerifikator.text = pengajuan.catatanVerifikator
 
-            // 6. Alasan Penolakan (Tampil hanya jika ada isi)
-            if (!pengajuan.alasanPenolakan.isNullOrBlank()) {
-                binding.cardPenolakan.visibility = View.VISIBLE
-                binding.tvAlasanPenolakan.text = pengajuan.alasanPenolakan
-            } else {
-                binding.cardPenolakan.visibility = View.GONE
-            }
+            binding.cardPenolakan.visibility = if (!pengajuan.alasanPenolakan.isNullOrBlank()) View.VISIBLE else View.GONE
+            binding.tvAlasanPenolakan.text = pengajuan.alasanPenolakan
 
-            // 7. Visibilitas Tombol Aksi
+            // 7. Visibilitas Tombol
             binding.btnKelolaDokumen.visibility = if (state.canAttachDocuments) View.VISIBLE else View.GONE
             binding.btnSubmit.visibility = if (state.canSubmit) View.VISIBLE else View.GONE
             binding.btnDelete.visibility = if (state.canDelete) View.VISIBLE else View.GONE
@@ -153,9 +141,8 @@ class DetailPengajuanActivity : AppCompatActivity() {
     private fun showDocumentSelectionDialog() {
         val state = viewModel.uiState.value
         val documents = state.availableDocuments
-
         if (documents.isEmpty()) {
-            Toast.makeText(this, "Belum ada dokumen. Silakan unggah di menu Dokumen.", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Belum ada dokumen di Master.", Toast.LENGTH_SHORT).show()
             return
         }
 
@@ -167,22 +154,18 @@ class DetailPengajuanActivity : AppCompatActivity() {
         dialogBinding.rvDocuments.adapter = adapter
 
         MaterialAlertDialogBuilder(this)
-            .setTitle("Kelola Lampiran Dokumen")
+            .setTitle("Kelola Lampiran")
             .setView(dialogBinding.root)
-            .setPositiveButton("Simpan") { _: DialogInterface, _: Int ->
-                viewModel.attachDocuments(pengajuanId)
-            }
-            .setNegativeButton("Batal") { dialog: DialogInterface, _: Int -> dialog.dismiss() }
+            .setPositiveButton("Simpan") { _, _ -> viewModel.attachDocuments(pengajuanId) }
+            .setNegativeButton("Batal", null)
             .show()
     }
 
     private fun showSubmitConfirmationDialog() {
         MaterialAlertDialogBuilder(this)
             .setTitle("Submit Pengajuan")
-            .setMessage("Kirim pengajuan sekarang? Data tidak dapat diubah setelah dikirim.")
-            .setPositiveButton("Ya, Kirim") { _: DialogInterface, _: Int ->
-                viewModel.submitPengajuan(pengajuanId)
-            }
+            .setMessage("Kirim sekarang? Data tidak bisa diubah setelah dikirim.")
+            .setPositiveButton("Ya, Kirim") { _, _ -> viewModel.submitPengajuan(pengajuanId) }
             .setNegativeButton("Batal", null)
             .show()
     }
@@ -190,10 +173,8 @@ class DetailPengajuanActivity : AppCompatActivity() {
     private fun showDeleteConfirmationDialog() {
         MaterialAlertDialogBuilder(this)
             .setTitle("Hapus Draf")
-            .setMessage("Apakah Anda yakin ingin menghapus draf ini?")
-            .setPositiveButton("Ya, Hapus") { _: DialogInterface, _: Int ->
-                viewModel.deletePengajuan(pengajuanId)
-            }
+            .setMessage("Yakin ingin menghapus draf ini?")
+            .setPositiveButton("Ya, Hapus") { _, _ -> viewModel.deletePengajuan(pengajuanId) }
             .setNegativeButton("Batal", null)
             .show()
     }

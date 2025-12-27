@@ -1,3 +1,4 @@
+// app/src/main/java/com/example/sipakjabat/AdminPengajuanAdapter.kt
 package com.example.sipakjabat
 
 import android.view.LayoutInflater
@@ -13,9 +14,12 @@ class AdminPengajuanAdapter(
 
     inner class ViewHolder(private val binding: ItemPengajuanBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(item: PengajuanResponse) {
-            // Menampilkan Nama Pengaju (Jika ada di DTO) atau Jenis Pengajuan
-            binding.tvJenis.text = item.namaPengaju ?: item.jenisPengajuan
-            binding.tvTanggal.text = "Diajukan pada: ${item.tanggalDibuat}"
+            // Menampilkan Identitas: Nama (NIP)
+            val nama = item.user?.namaLengkap ?: "Pegawai"
+            val nip = item.user?.nip ?: "-"
+            binding.tvJenis.text = "$nama ($nip)"
+
+            binding.tvTanggal.text = "Jenis: ${item.jenisPengajuan} | ${item.tanggalDibuat}"
             binding.tvStatus.text = item.status
 
             binding.root.setOnClickListener { onItemClick(item) }
