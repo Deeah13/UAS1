@@ -34,23 +34,29 @@ class AdminActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
+        // Mengambil data statistik terbaru setiap kali admin kembali ke Dashboard
         loadSummaryData()
     }
 
     private fun setupUI() {
+        // 1. Navigasi ke Daftar Pengajuan Baru (Verifikasi)
         binding.btnVerifyList.setOnClickListener {
             startActivity(Intent(this, AdminPengajuanMasukActivity::class.java))
         }
 
+        // 2. Navigasi ke Riwayat Seluruh Pengajuan
         binding.btnAllHistory.setOnClickListener {
             startActivity(Intent(this, AdminAllPengajuanActivity::class.java))
         }
 
+        // 3. FIX: Navigasi ke Manajemen Pengguna (Daftar Pegawai)
         binding.btnManageUsers.setOnClickListener {
-            // Nanti dihubungkan ke AdminUserListActivity
-            Toast.makeText(this, "Membuka Manajemen Pengguna...", Toast.LENGTH_SHORT).show()
+            // Berpindah ke halaman daftar pegawai
+            val intent = Intent(this, AdminUserListActivity::class.java)
+            startActivity(intent)
         }
 
+        // 4. Konfirmasi Keluar
         binding.btnLogout.setOnClickListener {
             showLogoutConfirmationDialog()
         }
@@ -65,12 +71,12 @@ class AdminActivity : AppCompatActivity() {
                     binding.tvWelcome.text = "Halo, ${profile?.namaLengkap ?: "Admin"}"
                     binding.tvAdminNip.text = "NIP: ${profile?.nip ?: "-"}"
                 }
-            } catch (e: Exception) { /* Abaikan */ }
+            } catch (e: Exception) { /* Abaikan jika gagal */ }
         }
     }
 
     /**
-     * PERBAIKAN: Memuat data ringkasan dengan validasi manual agar angka Revisi akurat
+     * Memuat data ringkasan dengan validasi manual agar angka "Revisi" akurat
      */
     private fun loadSummaryData() {
         val token = tokenManager.getToken() ?: return
@@ -78,7 +84,7 @@ class AdminActivity : AppCompatActivity() {
 
         lifecycleScope.launch {
             try {
-                // Melakukan dua pemanggilan API secara paralel untuk sinkronisasi
+                // Mengambil data dari dua endpoint sekaligus untuk sinkronisasi data
                 val summaryDeferred = async { RetrofitClient.instance.getAdminSummary("Bearer $token") }
                 val allDataDeferred = async { RetrofitClient.instance.getAllPengajuan("Bearer $token") }
 
@@ -89,15 +95,15 @@ class AdminActivity : AppCompatActivity() {
                     val summary = summaryResponse.body()?.data
                     val listAll = allResponse.body()?.data ?: emptyList()
 
-                    // Hitung manual status PERLU_REVISI dari list riwayat
+                    // Menghitung manual status PERLU_REVISI dari daftar riwayat sebagai validasi
                     val manualRevisiCount = listAll.count { it.status == "PERLU_REVISI" }
 
-                    // Set statistik dasar
+                    // Update UI Statistik
                     binding.tvTotalMasuk.text = summary?.jumlahSubmitted?.toString() ?: "0"
                     binding.tvTotalApproved.text = summary?.jumlahApproved?.toString() ?: "0"
                     binding.tvTotalRejected.text = summary?.jumlahRejected?.toString() ?: "0"
 
-                    // Logika Koreksi: Jika backend summary mengirim 0 tapi di list /all ada data, pakai hitungan manual
+                    // Gunakan hitungan manual jika backend summary memberikan angka 0 padahal data ada
                     val finalRevisiCount = if (summary?.jumlahRevisi == 0 && manualRevisiCount > 0) {
                         manualRevisiCount
                     } else {
@@ -107,7 +113,7 @@ class AdminActivity : AppCompatActivity() {
                     binding.tvTotalRevisi.text = finalRevisiCount.toString()
                 }
             } catch (e: Exception) {
-                Toast.makeText(this@AdminActivity, "Gagal memuat statistik dashboard", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@AdminActivity, "Gagal memperbarui dashboard", Toast.LENGTH_SHORT).show()
             } finally {
                 binding.progressBar.visibility = View.GONE
             }
@@ -117,7 +123,7 @@ class AdminActivity : AppCompatActivity() {
     private fun showLogoutConfirmationDialog() {
         MaterialAlertDialogBuilder(this)
             .setTitle("Konfirmasi")
-            .setMessage("Keluar dari aplikasi?")
+            .setMessage("Apakah Anda yakin ingin keluar?")
             .setPositiveButton("Keluar") { _, _ ->
                 tokenManager.clear()
                 val intent = Intent(this, MainActivity::class.java)

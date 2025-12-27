@@ -88,40 +88,38 @@ interface ApiService {
     ): Response<GlobalResponse<String>>
 
 
-    // --- 4. ENDPOINT KHUSUS ADMIN / VERIFIKATOR ---
-    // Sesuai dengan AdminController.java
-
-    // Manajemen Pengguna
-    @POST("api/admin/users")
-    suspend fun createUser(
-        @Header("Authorization") token: String,
-        @Body request: AdminCreateUserRequest
-    ): Response<GlobalResponse<ProfileResponse>> // ProfileResponse atau UserResponse sesuai model Anda
+    // --- 4. MANAJEMEN PENGGUNA (ADMIN - 7 ENDPOINT) ---
 
     @GET("api/admin/users")
     suspend fun getAllUsers(
         @Header("Authorization") token: String
-    ): Response<GlobalResponse<List<ProfileResponse>>>
+    ): Response<GlobalResponse<List<UserResponse>>> // Menggunakan UserResponse agar sinkron dengan UserAdapter
+
+    @POST("api/admin/users")
+    suspend fun createUser(
+        @Header("Authorization") token: String,
+        @Body request: AdminCreateUserRequest
+    ): Response<GlobalResponse<UserResponse>>
 
     @GET("api/admin/users/{id}")
     suspend fun getUserDetail(
         @Header("Authorization") token: String,
         @Path("id") id: Long
-    ): Response<GlobalResponse<ProfileResponse>>
+    ): Response<GlobalResponse<UserResponse>>
 
     @PUT("api/admin/users/{id}")
     suspend fun updateUser(
         @Header("Authorization") token: String,
         @Path("id") id: Long,
         @Body request: UpdateUserByAdminRequest
-    ): Response<GlobalResponse<ProfileResponse>>
+    ): Response<GlobalResponse<UserResponse>>
 
     @PUT("api/admin/users/{id}/role")
     suspend fun ubahRole(
         @Header("Authorization") token: String,
         @Path("id") id: Long,
         @Body request: UbahRoleRequestDTO
-    ): Response<GlobalResponse<ProfileResponse>>
+    ): Response<GlobalResponse<UserResponse>>
 
     @DELETE("api/admin/users/{id}")
     suspend fun deleteUser(
@@ -136,7 +134,9 @@ interface ApiService {
         @Body request: CreateDokumenRequest
     ): Response<GlobalResponse<DokumenResponse>>
 
-    // Manajemen Pengajuan (Admin)
+
+    // --- 5. MANAJEMEN PENGAJUAN (ADMIN - 7 ENDPOINT) ---
+
     @GET("api/admin/pengajuan/all")
     suspend fun getAllPengajuan(
         @Header("Authorization") token: String
@@ -152,7 +152,6 @@ interface ApiService {
         @Header("Authorization") token: String
     ): Response<GlobalResponse<SummaryResponseDTO>>
 
-    // PERBAIKAN: Menambahkan getAdminDetailPengajuan yang sebelumnya menyebabkan error
     @GET("api/admin/pengajuan/{id}")
     suspend fun getAdminDetailPengajuan(
         @Header("Authorization") token: String,

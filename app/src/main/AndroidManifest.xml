@@ -27,6 +27,16 @@
 
         <activity android:name=".AdminAllPengajuanActivity" android:exported="false" />
 
+        <activity android:name=".AdminUserListActivity" />
+
+        <activity android:name=".AdminAddUserActivity" />
+
+        <activity android:name=".AdminUserDetailActivity" />
+
+        <activity android:name=".AdminEditUserActivity" />
+
+        <activity android:name=".AdminAddUserDokumenActivity" />
+
         <activity
             android:name=".TambahDokumenActivity"
             android:exported="false" />

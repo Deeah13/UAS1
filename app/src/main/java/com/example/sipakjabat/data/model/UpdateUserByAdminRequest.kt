@@ -7,6 +7,5 @@ data class UpdateUserByAdminRequest(
     @SerializedName("email") val email: String,
     @SerializedName("pangkatGolongan") val pangkatGolongan: String,
     @SerializedName("jabatan") val jabatan: String,
-    // Gunakan format "yyyy-MM-dd" sesuai @JsonFormat di backend
     @SerializedName("tmtPangkatTerakhir") val tmtPangkatTerakhir: String
 )
