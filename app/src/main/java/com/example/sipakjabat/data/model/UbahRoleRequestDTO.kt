@@ -6,3 +6,4 @@ data class UbahRoleRequestDTO(
     // Menggunakan @SerializedName agar sinkron dengan backend
     @SerializedName("newRole") val newRole: String
 )
+

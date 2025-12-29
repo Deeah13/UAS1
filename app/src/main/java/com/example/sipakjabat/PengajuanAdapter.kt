@@ -34,7 +34,6 @@ class PengajuanAdapter(private var pengajuanList: List<PengajuanResponse>) :
         holder.binding.tvStatus.text = item.status
         holder.binding.tvTanggal.text = item.tanggalDibuat
 
-        // --- Logika Warna Pastel Soft ---
         when (status) {
             "APPROVED" -> { // Diterima
                 holder.binding.rootCard.setCardBackgroundColor(Color.parseColor("#E8F5E9")) // Pastel Hijau
@@ -58,7 +57,6 @@ class PengajuanAdapter(private var pengajuanList: List<PengajuanResponse>) :
             }
         }
 
-        // Click Listener Tetap
         holder.itemView.setOnClickListener {
             val context = holder.itemView.context
             val intent = Intent(context, DetailPengajuanActivity::class.java).apply {

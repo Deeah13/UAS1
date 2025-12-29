@@ -54,9 +54,6 @@ class DetailPengajuanActivity : AppCompatActivity() {
     }
 
     private fun setupUI() {
-        // PERBAIKAN UTAMA: Menghapus setSupportActionBar(binding.toolbar)
-        // karena ID 'toolbar' sudah tidak ada di XML (diganti headerView)
-
         binding.btnBack.setOnClickListener {
             finish()
         }

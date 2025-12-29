@@ -161,7 +161,7 @@
         android:layout_marginBottom="40dp"
         android:fontFamily="@font/poppins_regular"
         android:gravity="center"
-        android:text="© 2025 SIPAKJABAT - BPS Kabupaten Klaten"
+        android:text="© 2025 SIPAKJABAT - BPS"
         android:textColor="#718096"
         android:textSize="11sp"
         app:layout_constraintBottom_toBottomOf="parent"

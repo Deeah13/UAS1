@@ -13,7 +13,6 @@ data class PengajuanResponse(
     @SerializedName("tanggalDibuat") val tanggalDibuat: String,
     // Menangkap data user pengaju (NAMA, NIP, EMAIL)
     @SerializedName("user") val user: UserSimpleResponse? = null,
-    // Field lampiran yang sebelumnya menyebabkan error
     @SerializedName("lampiran") val lampiran: List<DokumenResponse> = emptyList(),
     @SerializedName("catatanVerifikator") val catatanVerifikator: String? = null,
     @SerializedName("alasanPenolakan") val alasanPenolakan: String? = null

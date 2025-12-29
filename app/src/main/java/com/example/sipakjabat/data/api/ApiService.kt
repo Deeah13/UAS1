@@ -93,7 +93,7 @@ interface ApiService {
     @GET("api/admin/users")
     suspend fun getAllUsers(
         @Header("Authorization") token: String
-    ): Response<GlobalResponse<List<UserResponse>>> // Menggunakan UserResponse agar sinkron dengan UserAdapter
+    ): Response<GlobalResponse<List<UserResponse>>>
 
     @POST("api/admin/users")
     suspend fun createUser(

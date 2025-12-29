@@ -24,7 +24,7 @@ class DokumenAdapter(
             binding.tvNomorDokumen.text = "No: ${document.nomorDokumen}"
             binding.tvTanggalTerbit.text = "Terbit: ${document.tanggalTerbit}"
 
-            // Logika Menampilkan Deskripsi (Ditambahkan)
+            // Logika Menampilkan Deskripsi
             if (!document.deskripsi.isNullOrBlank()) {
                 binding.tvDeskripsi.visibility = View.VISIBLE
                 binding.tvDeskripsi.text = document.deskripsi

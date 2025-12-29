@@ -14,3 +14,4 @@ data class AdminCreateUserRequest(
     // Role dikirim sebagai String "PEGAWAI" atau "VERIFIKATOR"
     @SerializedName("role") val role: String
 )
+

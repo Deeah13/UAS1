@@ -38,7 +38,6 @@ class AdminUserListActivity : AppCompatActivity() {
     }
 
     private fun setupRecyclerView() {
-        // PERBAIKAN: Menentukan tipe data secara eksplisit (user: UserResponse)
         userAdapter = AdminUserAdapter { user: UserResponse ->
             val intent = Intent(this@AdminUserListActivity, AdminUserDetailActivity::class.java)
             intent.putExtra("USER_ID", user.id)

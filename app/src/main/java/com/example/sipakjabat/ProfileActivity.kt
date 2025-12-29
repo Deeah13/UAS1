@@ -41,10 +41,7 @@ class ProfileActivity : AppCompatActivity() {
 
     private fun setupToolbar() {
         setSupportActionBar(binding.toolbar)
-        // 1. Menghapus judul default "sipakjabat" agar tidak tumpang tindih dengan UI kustom
         supportActionBar?.setDisplayShowTitleEnabled(false)
-
-        // 2. Mengaktifkan fungsi klik pada ImageButton back manual
         binding.btnBack.setOnClickListener {
             finish()
         }
@@ -88,7 +85,6 @@ class ProfileActivity : AppCompatActivity() {
     private fun showChangePasswordDialog() {
         val dialogBinding = DialogChangePasswordBinding.inflate(layoutInflater)
 
-        // 3. Membuat judul kustom dengan font Poppins untuk dialog
         val titleView = TextView(this).apply {
             text = "Ganti Password"
             textSize = 20f
@@ -119,7 +115,7 @@ class ProfileActivity : AppCompatActivity() {
             try {
                 val token = tokenManager.getToken() ?: return@launch
 
-                // 4. Mengirim request dengan variabel yang sesuai dengan backend (currentPassword & newPassword)
+                // Mengirim request dengan variabel yang sesuai dengan backend (currentPassword & newPassword)
                 val request = ChangePasswordRequest(currentPassword = old, newPassword = new)
                 val response = RetrofitClient.instance.changePassword("Bearer $token", request)
 

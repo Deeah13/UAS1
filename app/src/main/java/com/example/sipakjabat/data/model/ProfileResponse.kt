@@ -9,3 +9,4 @@ data class ProfileResponse(
     val jabatan: String?,
     val role: String
 )
+

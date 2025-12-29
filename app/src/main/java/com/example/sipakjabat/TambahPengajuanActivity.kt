@@ -29,7 +29,6 @@ class TambahPengajuanActivity : AppCompatActivity() {
     }
 
     private fun setupUI() {
-        // PERBAIKAN: Menghapus setSupportActionBar(binding.toolbar)
         binding.btnBack.setOnClickListener { finish() }
         binding.btnSimpan.setOnClickListener { simpanPengajuan() }
     }

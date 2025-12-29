@@ -24,8 +24,7 @@ class AdminPengajuanAdapter(
             binding.tvJenis.text = "Jenis: ${item.jenisPengajuan}"
             binding.tvTanggal.text = item.tanggalDibuat ?: "-"
 
-            // 3. Logika Warna Keseluruhan Kotak & Badge (Sesuai Instruksi Tuan)
-            // Triple: (Warna Latar Kotak Pastel, Warna Badge/Stroke Pekat, Teks Label)
+            // 3. Logika Warna Keseluruhan Kotak & Badge
             val (cardBg, mainColor, statusText) = when (item.status) {
                 "APPROVED" -> Triple("#E8F5E9", "#2E7D32", "SETUJU")    // Hijau Pastel & Hijau Tua
                 "REJECTED" -> Triple("#FFEBEE", "#DC2626", "DITOLAK")  // Merah Pastel & Merah Tua

@@ -20,7 +20,7 @@ class AdminUserDetailActivity : AppCompatActivity() {
     private var userId: Long = -1
 
     // Variabel penampung data untuk dikirim ke halaman Edit
-    private var currentNip: String = "" // Perbaikan: Menambahkan penampung NIP
+    private var currentNip: String = ""
     private var currentNama: String = ""
     private var currentEmail: String = ""
     private var currentPangkat: String = ""
@@ -52,11 +52,11 @@ class AdminUserDetailActivity : AppCompatActivity() {
     private fun setupListeners() {
         binding.btnBack.setOnClickListener { finish() }
 
-        // FITUR EDIT DATA: Mengirimkan NIP agar tidak tampil sebagai "-"
+        // FITUR EDIT DATA:
         binding.btnEditUser.setOnClickListener {
             val intent = Intent(this, AdminEditUserActivity::class.java).apply {
                 putExtra("USER_ID", userId)
-                putExtra("NIP", currentNip) // Perbaikan: Mengirim NIP ke form edit
+                putExtra("NIP", currentNip)
                 putExtra("NAMA", currentNama)
                 putExtra("EMAIL", currentEmail)
                 putExtra("PANGKAT", currentPangkat)
@@ -89,7 +89,7 @@ class AdminUserDetailActivity : AppCompatActivity() {
                     val user = response.body()?.data
                     user?.let {
                         // Simpan ke variabel lokal agar bisa dikirim ke form edit
-                        currentNip = it.nip ?: "" // Perbaikan: Mengambil NIP dari response API
+                        currentNip = it.nip ?: ""
                         currentNama = it.namaLengkap
                         currentEmail = it.email
                         currentPangkat = it.pangkatGolongan ?: ""

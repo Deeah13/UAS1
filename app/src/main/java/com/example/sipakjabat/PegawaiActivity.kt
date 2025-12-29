@@ -55,7 +55,6 @@ class PegawaiActivity : AppCompatActivity() {
                 if (response.isSuccessful) {
                     val dataList = response.body()?.data ?: emptyList()
 
-                    // PERBAIKAN LOGIKA: Statistik "Proses" hanya Submitted dan Perlu Revisi
                     val countProses = dataList.count {
                         val s = it.status.uppercase()
                         s == "SUBMITTED" || s == "PERLU_REVISI"
@@ -64,7 +63,6 @@ class PegawaiActivity : AppCompatActivity() {
                     val countDiterima = dataList.count { it.status.uppercase() == "APPROVED" }
                     val countDitolak = dataList.count { it.status.uppercase() == "REJECTED" }
 
-                    // Perbarui UI Statistik Sebaris
                     binding.tvCountPending.text = countProses.toString()
                     binding.tvCountDiterima.text = countDiterima.toString()
                     binding.tvCountDitolak.text = countDitolak.toString()

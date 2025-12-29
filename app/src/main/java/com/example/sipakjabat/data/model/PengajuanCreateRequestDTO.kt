@@ -1,7 +1,8 @@
 package com.example.sipakjabat.data.model
 
 data class PengajuanCreateRequestDTO(
-    val jenisPengajuan: String, // REGULER, FUNGSIONAL, atau STRUKTURAL
+    val jenisPengajuan: String,
     val pangkatTujuan: String,
     val jabatanTujuan: String
 )
+

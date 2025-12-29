@@ -78,7 +78,6 @@ class MainActivity : AppCompatActivity() {
                 val pureToken = tokenWithBearer.removePrefix("Bearer ")
 
                 if (role != null && userId != null) {
-                    // SEKARANG KIRIM 3 PARAMETER: token, role, dan userId
                     tokenManager.saveAuthData(pureToken, role, userId)
                     navigateToDashboard(role)
                 } else {

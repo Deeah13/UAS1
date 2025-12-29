@@ -18,8 +18,7 @@ class AdminUserAdapter(private val onClick: (UserResponse) -> Unit) :
             binding.tvNamaUser.text = user.namaLengkap ?: "Tanpa Nama"
             binding.tvNipUser.text = "NIP: ${user.nip ?: "-"}"
 
-            // 2. Logika Warna Role (Satu Kotak Berwarna - Pastel Style)
-            // Triple: (Latar Kotak Pastel, Warna Aksen/Badge/Stroke, Label Teks)
+            // 2. Logika Warna Role
             val (cardBg, accentColor, roleLabel) = when (user.role) {
                 "VERIFIKATOR" -> Triple("#FFF9E6", "#C5A059", "VERIFIKATOR") // Gold Style
                 "ADMIN" -> Triple("#E8F5E9", "#2E7D32", "ADMINISTRATOR")     // Green Style

@@ -33,7 +33,6 @@ class RiwayatActivity : AppCompatActivity() {
     }
 
     private fun setupUI() {
-        // PERBAIKAN: Menghapus setSupportActionBar(binding.toolbar) karena Toolbar sudah diganti View
         binding.btnBack.setOnClickListener { finish() }
 
         binding.fabAddPengajuan.setOnClickListener {

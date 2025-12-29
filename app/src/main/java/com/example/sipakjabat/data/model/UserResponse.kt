@@ -13,3 +13,4 @@ data class UserResponse(
     @SerializedName("tmtPangkatTerakhir") val tmtPangkatTerakhir: String?,
     @SerializedName("noHp") val noHp: String?
 )
+

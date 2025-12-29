@@ -32,7 +32,6 @@ class TambahDokumenActivity : AppCompatActivity() {
     }
 
     private fun setupUI() {
-        // Set toolbar as action bar agar tidak error Unresolved Reference
         setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayShowTitleEnabled(false)
 

@@ -118,12 +118,10 @@ class AdminDetailVerifikasiActivity : AppCompatActivity() {
 
         val colorInt = Color.parseColor(colorHex)
 
-        // Atur Style Card: Background Clear (Putih), Outline Berwarna
         binding.cardHasilVerifikasi.setCardBackgroundColor(Color.WHITE)
         binding.cardHasilVerifikasi.strokeColor = colorInt
-        binding.cardHasilVerifikasi.strokeWidth = 4 // Bingkai tegas
+        binding.cardHasilVerifikasi.strokeWidth = 4
 
-        // Atur warna teks agar senada dengan outline
         binding.tvStatusFinal.setTextColor(colorInt)
         binding.tvLabelHasil.setTextColor(colorInt)
     }

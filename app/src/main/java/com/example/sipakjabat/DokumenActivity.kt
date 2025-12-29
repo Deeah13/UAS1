@@ -122,7 +122,6 @@ class DokumenActivity : AppCompatActivity() {
         if (isLoading) binding.tvEmpty.visibility = View.GONE
     }
 
-    // PERBAIKAN: Hanya menampilkan Toast, tidak mencetak teks di background
     private fun handleApiError(message: String) {
         Toast.makeText(this, message, Toast.LENGTH_LONG).show()
     }

@@ -25,7 +25,6 @@ data class DetailPengajuanUiState(
     val canAttachDocuments: Boolean get() = pengajuan?.status == "DRAFT"
     val canSubmit: Boolean get() = pengajuan?.status == "DRAFT" && (pengajuan.lampiran.isNotEmpty())
 
-    // PERBAIKAN: Logika tombol hapus sesuai aturan backend (Hanya DRAFT)
     val canDelete: Boolean get() = pengajuan?.status == "DRAFT"
 
     val statusText: String get() = when (pengajuan?.status) {
@@ -126,7 +125,6 @@ class PengajuanDetailViewModel(private val tokenManager: TokenManager) : ViewMod
         }
     }
 
-    // PERBAIKAN: Fungsi hapus pengajuan yang terintegrasi dengan backend
     fun deletePengajuan(pengajuanId: Long) {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }

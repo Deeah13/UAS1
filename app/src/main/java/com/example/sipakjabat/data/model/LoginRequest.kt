@@ -4,3 +4,4 @@ data class LoginRequest(
     val nip: String,
     val password: String
 )
+
